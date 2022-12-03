@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "@ignaciolarranaga/graphql-model": "^1.0.0",
-    "mongoose": "^6.6.5"
+    "uuid": "^9.0.0"
   }
 }

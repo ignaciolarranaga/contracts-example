@@ -86,31 +86,166 @@ export type Scalars = {
   AWSURL: any;
 };
 
-export type Company = {
-  __typename?: 'Company';
-  email: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
+export type BestClientsInput = {
+  from?: InputMaybe<Scalars['AWSDateTime']>;
+  to?: InputMaybe<Scalars['AWSDateTime']>;
 };
 
-export type Location = {
-  __typename?: 'Location';
+export type BestClientsOutput = {
+  __typename?: 'BestClientsOutput';
+  fullName: Scalars['String'];
   id: Scalars['ID'];
-  timezone: Scalars['String'];
+  paid: Scalars['Float'];
 };
+
+export type BestClientsOutputConnection = {
+  __typename?: 'BestClientsOutputConnection';
+  items?: Maybe<Array<BestClientsOutput>>;
+  nextToken?: Maybe<Scalars['String']>;
+};
+
+export type BestProfessionInput = {
+  end?: InputMaybe<Scalars['AWSDateTime']>;
+  start?: InputMaybe<Scalars['AWSDateTime']>;
+};
+
+export enum ContactStatus {
+  InProgress = 'IN_PROGRESS',
+  New = 'NEW',
+  Terminated = 'TERMINATED'
+}
+
+export type Contract = {
+  __typename?: 'Contract';
+  createdAt: Scalars['AWSDateTime'];
+  createdBy?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  status: ContactStatus;
+  terms: Scalars['String'];
+  updatedAt: Scalars['AWSDateTime'];
+  updatedBy?: Maybe<Scalars['String']>;
+};
+
+export type ContractConnection = {
+  __typename?: 'ContractConnection';
+  items?: Maybe<Array<Contract>>;
+  nextToken?: Maybe<Scalars['String']>;
+};
+
+/** # Inputs */
+export type CreateProfileInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  profession: Scalars['String'];
+  type: ProfileType;
+};
+
+export type Job = {
+  __typename?: 'Job';
+  createdAt: Scalars['AWSDateTime'];
+  createdBy?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  paid: Scalars['Boolean'];
+  paymentDate?: Maybe<Scalars['AWSDateTime']>;
+  price: Scalars['Float'];
+  updatedAt: Scalars['AWSDateTime'];
+  updatedBy?: Maybe<Scalars['String']>;
+};
+
+export type JobConnection = {
+  __typename?: 'JobConnection';
+  items?: Maybe<Array<Job>>;
+  nextToken?: Maybe<Scalars['String']>;
+};
+
+export type ListJobsFilterInput = {
+  paid?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type MakeProfileDepositInput = {
+  amount: Scalars['Float'];
+  id: Scalars['ID'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createProfile?: Maybe<Profile>;
+  makeProfileDeposit?: Maybe<Profile>;
+  payJob?: Maybe<Job>;
+};
+
+
+export type MutationCreateProfileArgs = {
+  input: CreateProfileInput;
+};
+
+
+export type MutationMakeProfileDepositArgs = {
+  input: MakeProfileDepositInput;
+};
+
+
+export type MutationPayJobArgs = {
+  id: Scalars['ID'];
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  balance: Scalars['Float'];
+  firstName: Scalars['String'];
+  id: Scalars['ID'];
+  lastName: Scalars['String'];
+  profession: Scalars['String'];
+  type: ProfileType;
+};
+
+export enum ProfileType {
+  Client = 'CLIENT',
+  Contractor = 'CONTRACTOR'
+}
 
 export type Query = {
   __typename?: 'Query';
-  getCompany?: Maybe<Company>;
-  getLocation?: Maybe<Location>;
+  bestClients?: Maybe<BestClientsOutputConnection>;
+  bestProfession?: Maybe<Scalars['String']>;
+  getContract?: Maybe<Contract>;
+  getProfile?: Maybe<Profile>;
+  listContracts?: Maybe<ContractConnection>;
+  listJobs?: Maybe<JobConnection>;
 };
 
 
-export type QueryGetCompanyArgs = {
+export type QueryBestClientsArgs = {
+  input?: InputMaybe<BestClientsInput>;
+  limit?: InputMaybe<Scalars['Int']>;
+  nextToken?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryBestProfessionArgs = {
+  input?: InputMaybe<BestProfessionInput>;
+};
+
+
+export type QueryGetContractArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QueryGetLocationArgs = {
-  id: Scalars['ID'];
+export type QueryGetProfileArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryListContractsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  nextToken?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryListJobsArgs = {
+  filter?: InputMaybe<ListJobsFilterInput>;
+  limit?: InputMaybe<Scalars['Int']>;
+  nextToken?: InputMaybe<Scalars['String']>;
 };

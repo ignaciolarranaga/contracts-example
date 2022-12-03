@@ -130,6 +130,14 @@ type ContractConnection {
   nextToken: String
 }
 
+"""# Inputs"""
+input CreateProfileInput {
+  firstName: String!
+  lastName: String!
+  profession: String!
+  type: ProfileType!
+}
+
 type Job {
   id: ID!
   description: String!
@@ -158,6 +166,7 @@ input MakeProfileDepositInput {
 
 type Mutation {
   payJob(id: ID!): Job
+  createProfile(input: CreateProfileInput!): Profile
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile
 }
 
@@ -181,4 +190,5 @@ type Query {
   listContracts(limit: Int, nextToken: String): ContractConnection
   listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection
   bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
+  getProfile(id: ID): Profile
 }

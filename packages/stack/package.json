@@ -16,7 +16,7 @@
     "lint-and-fix": "eslint . --config ../../.eslintrc --ext .ts --fix",
     "prettier": "prettier --config ../../.prettierrc --ignore-path .prettierignore --check \"**/*.+(js|ts|json)\"",
     "format": "prettier --config ../../.prettierrc --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
-    "regenerate-graphql": "graphql-schema-utilities -d -s \"src/app-sync/schemas/*.graphqls\" -o src/app-sync/schema.graphqls"
+    "regenerate-graphql-schema": "graphql-schema-utilities -d -s \"src/app-sync/schemas/*.graphql\" -o src/app-sync/schema.graphql"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",

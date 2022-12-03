@@ -1,6 +1,6 @@
 import { AppSyncResolverEvent, Context } from 'aws-lambda';
 
-import getCompany from 'resolvers/getCompany';
+import { getProfile } from 'resolvers/getProfile';
 import { handler } from '.';
 import errorCodes from 'error-codes';
 
@@ -11,15 +11,15 @@ export function mockFunction<T extends (...args: any[]) => any>(
   return fn as jest.MockedFunction<T>;
 }
 
-jest.mock('./resolvers/getCompany.ts');
-const companyHandlerMock = mockFunction(getCompany);
+jest.mock('./resolvers/getProfile.ts');
+const getProfileHandlerMock = mockFunction(getProfile);
 
 // The test does not need to have a maximum number of lines
 /* eslint max-lines-per-function: ["off"] */
 describe('handler', () => {
-  const SAMPLE_COMPANY_HANDLER_INPUT_EVENT = {
+  const SAMPLE_HANDLER_INPUT_EVENT = {
     info: {
-      fieldName: 'getCompany',
+      fieldName: 'getProfile',
       parentTypeName: 'Query',
       variables: {},
     },
@@ -29,19 +29,19 @@ describe('handler', () => {
   } as AppSyncResolverEvent<any>;
   const SAMPLE_CONTEXT = {} as Context;
 
-  it('should call the company handler when asked to do so', () => {
+  it('should call the handler when asked to do so', () => {
     const callbackMock = jest.fn();
 
-    handler(SAMPLE_COMPANY_HANDLER_INPUT_EVENT, SAMPLE_CONTEXT, callbackMock);
+    handler(SAMPLE_HANDLER_INPUT_EVENT, SAMPLE_CONTEXT, callbackMock);
 
-    expect(companyHandlerMock.mock.calls.length).toBe(1);
+    expect(getProfileHandlerMock.mock.calls.length).toBe(1);
   });
 
   it('should callback with the correct error when the type is not found', () => {
     const SAMPLE_INPUT_EVENT = {
-      ...SAMPLE_COMPANY_HANDLER_INPUT_EVENT,
+      ...SAMPLE_HANDLER_INPUT_EVENT,
       info: {
-        ...SAMPLE_COMPANY_HANDLER_INPUT_EVENT.info,
+        ...SAMPLE_HANDLER_INPUT_EVENT.info,
         parentTypeName: 'UNKNOWN',
       },
     } as AppSyncResolverEvent<any>;
@@ -56,9 +56,9 @@ describe('handler', () => {
 
   it('should callback with the correct error when the field is not found', () => {
     const SAMPLE_INPUT_EVENT = {
-      ...SAMPLE_COMPANY_HANDLER_INPUT_EVENT,
+      ...SAMPLE_HANDLER_INPUT_EVENT,
       info: {
-        ...SAMPLE_COMPANY_HANDLER_INPUT_EVENT.info,
+        ...SAMPLE_HANDLER_INPUT_EVENT.info,
         fieldName: 'UNKNOWN',
       },
     } as AppSyncResolverEvent<any>;
@@ -74,11 +74,11 @@ describe('handler', () => {
   it('should callback with the correct error when the resolver found an error', () => {
     const callbackMock = jest.fn();
     const SAMPLE_ERROR = 'Sample unexpected error';
-    companyHandlerMock.mockImplementation(() => {
+    getProfileHandlerMock.mockImplementation(() => {
       throw new Error(SAMPLE_ERROR);
     });
 
-    handler(SAMPLE_COMPANY_HANDLER_INPUT_EVENT, SAMPLE_CONTEXT, callbackMock);
+    handler(SAMPLE_HANDLER_INPUT_EVENT, SAMPLE_CONTEXT, callbackMock);
 
     expect(callbackMock).toHaveBeenCalledWith(`Error: ${SAMPLE_ERROR}`);
   });

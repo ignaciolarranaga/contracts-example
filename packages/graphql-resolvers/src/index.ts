@@ -1,8 +1,8 @@
 import { AppSyncResolverEvent, Context, Callback } from 'aws-lambda';
 
 import errorCodes from 'error-codes';
-import getCompany from 'resolvers/getCompany';
-import getLocation from 'resolvers/getLocation';
+import { getProfile } from 'resolvers/getProfile';
+import { createProfile } from 'resolvers/createProfile';
 
 const resolvers: {
   [type: string]: {
@@ -14,8 +14,10 @@ const resolvers: {
   };
 } = {
   Query: {
-    getCompany,
-    getLocation,
+    getProfile
+  },
+  Mutation: {
+    createProfile,
   },
 };
 
@@ -29,7 +31,7 @@ export async function handler(
   context: Context,
   callback: Callback
 ) {
-  //console.log('Event 5 received', JSON.stringify(event));
+  //console.log('Event received', JSON.stringify(event));
 
   const typeHandler = resolvers[event.info.parentTypeName];
   if (typeHandler) {

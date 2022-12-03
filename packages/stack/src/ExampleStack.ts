@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import { Environment } from './Environment';
 import { buildAppSync } from './app-sync';
 import { buildGraphQLResolversLambda } from './lambda/graphql-resolvers';
+import { buildDynamoDBTable } from './dynamodb';
 
 export interface ExampleStackParameters {
   env: Environment;
@@ -22,6 +23,8 @@ export class ExampleStack extends Stack {
       this,
       params.env,
     );
+
+    buildDynamoDBTable(this, params.env);
 
     buildAppSync(this, params.env, graphQLResolversLambda);
   }

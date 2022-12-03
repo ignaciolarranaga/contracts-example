@@ -13,6 +13,12 @@ type Profile {
 }
 
 ## Inputs
+input CreateProfileInput {
+  firstName: String!
+  lastName: String!
+  profession: String!
+  type: ProfileType!
+}
 
 input MakeProfileDepositInput {
   id: ID!
@@ -21,6 +27,12 @@ input MakeProfileDepositInput {
 
 ## Mutations
 
+extend type Query {
+  getProfile(id: ID): Profile
+}
+
 extend type Mutation {
+  createProfile(input: CreateProfileInput!): Profile
+
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile
 }

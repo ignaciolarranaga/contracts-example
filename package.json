@@ -9,6 +9,8 @@
     "lint": "lerna run lint",
     "prettier": "lerna run prettier",
     "format": "lerna run format",
+    "regenerate-graphql-schema": "lerna run --scope @ignaciolarranaga/stack regenerate-graphql-schema",
+    "regenerate-graphql-model-types": "lerna run --scope @ignaciolarranaga/graphql-model regenerate-graphql-model-types",
     "synth": "lerna run --scope @ignaciolarranaga/stack synth",
     "deploy": "lerna run --scope @ignaciolarranaga/stack deploy"
   },
