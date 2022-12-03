@@ -10,7 +10,7 @@ import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
 
-const SCHEMA_FILE_PATH = 'src/app-sync/schema.graphqls'; // cspell:disable-line
+const SCHEMA_FILE_PATH = 'src/app-sync/schema.graphql';
 const GRAPHQL_REQUEST_RESOLVER_TEMPLATE =
   'src/app-sync/templates/resolvers.req.vtl';
 const GRAPHQL_RESPONSE_RESOLVER_TEMPLATE =

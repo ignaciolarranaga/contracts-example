@@ -19,12 +19,12 @@ export class ExampleStack extends Stack {
   ) {
     super(scope, id, props);
 
+    const dynamoDBTable = buildDynamoDBTable(this, params.env);
     const graphQLResolversLambda = buildGraphQLResolversLambda(
       this,
       params.env,
+      dynamoDBTable,
     );
-
-    buildDynamoDBTable(this, params.env);
 
     buildAppSync(this, params.env, graphQLResolversLambda);
   }

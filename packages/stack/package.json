@@ -10,7 +10,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "cdk": "cdk",
-    "deploy": "cdk deploy -y",
+    "deploy": "cdk deploy",
     "synth": "cdk synth --no-staging > ../../stack.yml",
     "lint": "eslint . --config ../../.eslintrc --ext .ts",
     "lint-and-fix": "eslint . --config ../../.eslintrc --ext .ts --fix",

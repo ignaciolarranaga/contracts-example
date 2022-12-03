@@ -15,7 +15,8 @@ Or doing a local setup manually:
 
 Notes:
 * This project uses [Lerna](https://lerna.js.org/) for the building of the monorepo.
-* We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging
+* We do not rebuild the code on deploy to improve the performance of the development workflow, so remember to run `npm run build && npm run deploy`.
+* We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging.
 
 ## Useful commands
 

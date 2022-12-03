@@ -6,6 +6,8 @@ import {
   Runtime,
   Tracing,
 } from 'aws-cdk-lib/aws-lambda';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
@@ -13,6 +15,7 @@ import { Environment } from '../Environment';
 export function buildGraphQLResolversLambda(
   scope: Construct,
   env: Environment,
+  dynamoDBTable: Table,
 ) {
   const librariesLayer = new LayerVersion(scope, 'GraphQLResolversLibraries', {
     layerVersionName: `graphql-resolvers-libraries-${env}`,
@@ -40,10 +43,20 @@ export function buildGraphQLResolversLambda(
     handler: 'index.handler',
     environment: {
       ENV: env,
+      TABLE_NAME: dynamoDBTable.tableName,
     },
     tracing: Tracing.ACTIVE,
     timeout: Duration.seconds(15), // Incrementing timeout due mongo connection
   });
+
+  lambda.addToRolePolicy(
+    new PolicyStatement({
+      actions: [
+        'dynamodb:PutItem',
+      ],
+      resources: [ dynamoDBTable.tableArn ],
+    })
+  );
 
   return lambda;
 }

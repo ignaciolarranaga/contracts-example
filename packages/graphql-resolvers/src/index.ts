@@ -27,7 +27,7 @@ export async function handler(
   context: Context,
   callback: Callback
 ) {
-  //console.log('Event received', JSON.stringify(event));
+  console.log('Event received', JSON.stringify(event, null, 2));
 
   const typeHandler = resolvers[event.info.parentTypeName];
   if (typeHandler) {
