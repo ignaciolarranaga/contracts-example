@@ -8,6 +8,7 @@ import {
 } from 'aws-cdk-lib/aws-lambda';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { UserPoolClient } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
@@ -15,7 +16,8 @@ import { Environment } from '../Environment';
 export function buildGraphQLResolversLambda(
   scope: Construct,
   env: Environment,
-  dynamoDBTable: Table
+  dynamoDBTable: Table,
+  userPoolClient: UserPoolClient,
 ) {
   const librariesLayer = new LayerVersion(scope, 'GraphQLResolversLibraries', {
     layerVersionName: `graphql-resolvers-libraries-${env}`,
@@ -44,6 +46,7 @@ export function buildGraphQLResolversLambda(
     environment: {
       ENV: env,
       TABLE_NAME: dynamoDBTable.tableName,
+      USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId
     },
     tracing: Tracing.ACTIVE,
     timeout: Duration.seconds(15), // Incrementing timeout due mongo connection

@@ -1,0 +1,21 @@
+{
+  "name": "@ignaciolarranaga/user-pool-pre-sign-up",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --config ../../.eslintrc  --ext .ts",
+    "lint-and-fix": "eslint . --config ../../.eslintrc --ext .ts --fix",
+    "prettier": "prettier --config ../../.prettierrc --ignore-path .prettierignore --check \"**/*.+(js|ts|json)\"",
+    "format": "prettier --config ../../.prettierrc --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\""
+  },
+  "keywords": [],
+  "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.109",
+    "@types/node": "^18.11.10",
+    "typescript": "^4.9.3"
+  }
+}

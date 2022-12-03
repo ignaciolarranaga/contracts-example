@@ -132,6 +132,8 @@ type ContractConnection {
 
 """# Inputs"""
 input CreateProfileInput {
+  username: String!
+  password: String!
   firstName: String!
   lastName: String!
   profession: String!

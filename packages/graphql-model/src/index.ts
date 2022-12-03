@@ -136,8 +136,10 @@ export type ContractConnection = {
 export type CreateProfileInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  password: Scalars['String'];
   profession: Scalars['String'];
   type: ProfileType;
+  username: Scalars['String'];
 };
 
 export type Job = {
