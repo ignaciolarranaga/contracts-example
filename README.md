@@ -64,6 +64,6 @@ specifically a script named regenerate-graphql so execute `npm run regenerate-gr
 Note: We do not do it automatically at the stack deploy in order to not slowdown every single deploy and/or to avoid un-intended
 changes to be produced automatically since the schema doesn't change so frequently.
 
-### Regenerate the GraphQL Model Types
+### Regenerate the GraphQL Schema Types
 
-This project generates Typescript types for the GraphQL API operations. In order to regenerate those types you must execute `npm run regenerate-graphql-model-types`
+This project generates Typescript types for the GraphQL API operations. In order to regenerate those types you must execute `npm run regenerate-graphql-schema-types`

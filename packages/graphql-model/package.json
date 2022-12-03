@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "regenerate-graphql-model-types": "graphql-codegen --config codegen.yml"
+    "regenerate-graphql-schema-types": "graphql-codegen --config codegen.yml"
   },
   "keywords": [
     "graphql"
