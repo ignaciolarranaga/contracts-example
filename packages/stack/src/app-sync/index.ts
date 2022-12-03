@@ -55,11 +55,12 @@ export function buildAppSync(
     'ResolversLambdaDataSource',
     graphQLResolversLambda
   );
-  const dynamoDBTableDataSource = appSync.addDynamoDbDataSource('EPollsTable', dynamoDBTable);
+  const dynamoDBTableDataSource = appSync.addDynamoDbDataSource('ExampleTable', dynamoDBTable);
 
   // Resolvers
   for (const operation of [
     {typeName: 'Mutation', fieldName: 'createContract', dataSource: dynamoDBTableDataSource},
+    {typeName: 'Query', fieldName: 'getContract', dataSource: dynamoDBTableDataSource},
   ]) {
     operation.dataSource.createResolver({
       typeName: operation.typeName,

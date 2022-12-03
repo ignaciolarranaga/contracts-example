@@ -31,7 +31,7 @@ type ContractConnection {
 ## Queries
 
 extend type Query {
-  getContract(id: ID!): Contract
+  getContract(id: ID!): Contract @aws_cognito_user_pools
   listContracts(limit: Int, nextToken: String): ContractConnection
 }
 

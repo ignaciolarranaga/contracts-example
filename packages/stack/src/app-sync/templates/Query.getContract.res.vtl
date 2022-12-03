@@ -1,0 +1,7 @@
+#if ($ctx.error)
+  $util.error($ctx.error.message, $ctx.error.type)
+#elseif ($ctx.result.createdBy != "Profile#$ctx.identity.username")
+  $util.error("You are not allowed to retrieve this contract", "Unauthorized")
+#else
+  $util.toJson($ctx.result)
+#end

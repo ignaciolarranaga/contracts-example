@@ -188,7 +188,7 @@ type Mutation {
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
 }
 
-type Profile implements Audited {
+type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
   id: ID!
   firstName: String!
   lastName: String!
@@ -208,7 +208,7 @@ enum ProfileType {
 
 type Query {
   bestProfession(input: BestProfessionInput): String
-  getContract(id: ID!): Contract
+  getContract(id: ID!): Contract @aws_cognito_user_pools
   listContracts(limit: Int, nextToken: String): ContractConnection
   listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection
   bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection

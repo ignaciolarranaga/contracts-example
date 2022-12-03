@@ -3,7 +3,7 @@ enum ProfileType {
   CONTRACTOR
 }
 
-type Profile implements Audited {
+type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
   id: ID!
   firstName: String!
   lastName: String!
