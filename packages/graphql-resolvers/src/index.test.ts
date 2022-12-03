@@ -28,7 +28,7 @@ describe('handler', () => {
         firstName: 'John',
         lastName: 'Doe',
         profession: 'Engineer',
-        type: 'CONTRACTOR'
+        type: 'CONTRACTOR',
       },
     },
   } as AppSyncResolverEvent<any>;

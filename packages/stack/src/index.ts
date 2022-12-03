@@ -7,6 +7,6 @@ import { Environment } from './Environment';
 
 const app = new cdk.App();
 
-  new ExampleStack(app, 'ExampleStack', {
-    env: (process.env.ENVIRONMENT_NAME as Environment) || Environment.develop,
-  });
+new ExampleStack(app, 'ExampleStack', {
+  env: (process.env.ENVIRONMENT_NAME as Environment) || Environment.develop,
+});

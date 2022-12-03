@@ -23,7 +23,7 @@ export class ExampleStack extends Stack {
     const graphQLResolversLambda = buildGraphQLResolversLambda(
       this,
       params.env,
-      dynamoDBTable,
+      dynamoDBTable
     );
 
     buildAppSync(this, params.env, graphQLResolversLambda);

@@ -49,6 +49,7 @@ export function buildAppSync(
   // Lambda resolvers
   for (const operation of [
     { typeName: 'Mutation', fieldName: 'createProfile' },
+    { typeName: 'Mutation', fieldName: 'makeProfileDeposit' },
   ]) {
     resolversDataSource.createResolver({
       ...operation,

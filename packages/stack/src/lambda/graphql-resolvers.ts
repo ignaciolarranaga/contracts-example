@@ -15,7 +15,7 @@ import { Environment } from '../Environment';
 export function buildGraphQLResolversLambda(
   scope: Construct,
   env: Environment,
-  dynamoDBTable: Table,
+  dynamoDBTable: Table
 ) {
   const librariesLayer = new LayerVersion(scope, 'GraphQLResolversLibraries', {
     layerVersionName: `graphql-resolvers-libraries-${env}`,
@@ -51,10 +51,8 @@ export function buildGraphQLResolversLambda(
 
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: [
-        'dynamodb:PutItem',
-      ],
-      resources: [ dynamoDBTable.tableArn ],
+      actions: ['dynamodb:PutItem'],
+      resources: [dynamoDBTable.tableArn],
     })
   );
 
