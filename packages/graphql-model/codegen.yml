@@ -1,0 +1,6 @@
+overwrite: true
+schema: "../stack/src/app-sync/schema.graphql"
+generates:
+  src/index.ts:
+    plugins:
+      - "typescript"

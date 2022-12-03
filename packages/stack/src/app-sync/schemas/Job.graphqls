@@ -1,0 +1,55 @@
+type Job {
+  id: ID!
+  description: String!
+  price: Float!
+  paid: Boolean!
+  paymentDate: AWSDateTime
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  createdBy: String
+  updatedBy: String
+}
+
+## Inputs / Outputs
+
+input ListJobsFilterInput {
+  paid: Boolean
+}
+
+input BestClientsInput {
+  from: AWSDateTime
+  to: AWSDateTime
+}
+
+type BestClientsOutput {
+  id: ID!
+  fullName: String!
+  paid: Float!
+}
+
+## Connections
+
+type JobConnection {
+  items: [Job!]
+  nextToken: String
+}
+
+type BestClientsOutputConnection {
+  items: [BestClientsOutput!]
+  nextToken: String
+}
+
+## Queries
+
+extend type Query {
+  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection
+
+  bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
+}
+
+## Mutations
+
+type Mutation {
+  payJob(id: ID!): Job
+}

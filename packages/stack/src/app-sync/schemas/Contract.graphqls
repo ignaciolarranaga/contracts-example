@@ -1,0 +1,30 @@
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  TERMINATED
+}
+
+type Contract {
+  id: ID!
+  terms: String!
+  status: ContactStatus!
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  createdBy: String
+  updatedBy: String
+}
+
+## Connections
+
+type ContractConnection {
+  items: [Contract!]
+  nextToken: String
+}
+
+## Queries
+
+extend type Query {
+  getContract(id: ID!): Contract
+  listContracts(limit: Int, nextToken: String): ContractConnection
+}

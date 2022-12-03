@@ -1,0 +1,10 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+# Build output
+dist
+
+# Coverage output
+coverage

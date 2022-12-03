@@ -1,0 +1,8 @@
+input BestProfessionInput {
+  start: AWSDateTime
+  end: AWSDateTime
+}
+
+type Query {
+  bestProfession(input: BestProfessionInput): String
+}

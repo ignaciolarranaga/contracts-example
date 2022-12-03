@@ -1,0 +1,26 @@
+enum ProfileType {
+  CLIENT
+  CONTRACTOR
+}
+
+type Profile {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  profession: String!
+  balance: Float!
+  type: ProfileType!
+}
+
+## Inputs
+
+input MakeProfileDepositInput {
+  id: ID!
+  amount: Float!
+}
+
+## Mutations
+
+extend type Mutation {
+  makeProfileDeposit(input: MakeProfileDepositInput!): Profile
+}

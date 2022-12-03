@@ -1,0 +1,23 @@
+{
+  "name": "contracts-example",
+  "private": true,
+  "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "prettier": "lerna run prettier",
+    "format": "lerna run format",
+    "synth": "lerna run --scope @ignaciolarranaga/stack synth",
+    "deploy": "lerna run --scope @ignaciolarranaga/stack deploy"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "lerna": "^5.1.4",
+    "prettier": "^2.8.0"
+  }
+}
