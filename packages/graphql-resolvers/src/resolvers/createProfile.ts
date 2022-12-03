@@ -34,7 +34,7 @@ export default async function createProfile(
   const item: Profile & DynamoDBItem = {
     PK: `Profile#${event.arguments.input.id}`,
     SK: `Profile#${event.arguments.input.id}`,
-    _typename: 'Profile',
+    __typename: 'Profile',
 
     id: event.arguments.input.id,
     firstName: event.arguments.input.firstName,
