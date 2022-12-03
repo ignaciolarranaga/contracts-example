@@ -26,7 +26,7 @@ export class ExampleStack extends Stack {
       this,
       params.env,
       dynamoDBTable,
-      userPoolClient,
+      userPoolClient
     );
 
     buildAppSync(this, params.env, graphQLResolversLambda);

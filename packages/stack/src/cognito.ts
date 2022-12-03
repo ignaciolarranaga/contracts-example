@@ -18,7 +18,7 @@ export function buildUserPool(scope: Stack, env: Environment) {
     signInCaseSensitive: true,
     lambdaTriggers: {
       preSignUp: preSignUpFunction,
-    }
+    },
   });
 
   const userPoolClient = userPool.addClient('web-client', {

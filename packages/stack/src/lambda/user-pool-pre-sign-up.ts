@@ -3,7 +3,10 @@ import { Construct } from 'constructs';
 
 import { Environment } from '../environment';
 
-export function buildUserPollPreSignUpFunction(scope: Construct, env: Environment) {
+export function buildUserPollPreSignUpFunction(
+  scope: Construct,
+  env: Environment
+) {
   return new Function(scope, 'ExamplePreSignUp', {
     functionName: `example-user-pool-pre-sign-up-${env}`,
     description: 'The lambda that run the pre sign up validations',
@@ -12,6 +15,6 @@ export function buildUserPollPreSignUpFunction(scope: Construct, env: Environmen
     handler: 'index.handler',
     environment: {
       ENV: env,
-    }
+    },
   });
 }
