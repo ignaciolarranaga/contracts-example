@@ -126,7 +126,7 @@ enum ContactStatus {
   TERMINATED
 }
 
-type Contract implements Audited {
+type Contract implements Audited @aws_cognito_user_pools {
   id: ID!
   terms: String!
   status: ContactStatus!
@@ -143,7 +143,6 @@ type ContractConnection {
 
 input CreateContractInput {
   terms: String!
-  status: ContactStatus!
 }
 
 """# Inputs"""
@@ -184,7 +183,7 @@ input MakeProfileDepositInput {
 
 type Mutation {
   payJob(id: ID!): Job
-  createContract(input: CreateContractInput!): Contract
+  createContract(input: CreateContractInput!): Contract @aws_cognito_user_pools
   createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
 }

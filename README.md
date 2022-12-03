@@ -42,6 +42,7 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 | Entity            | PK                          | SK                                     | PK1                    | SK1                         |
 |-------------------|-----------------------------|----------------------------------------|------------------------|-----------------------------|
 | Profile           | Profile#[ID]                | Profile#[ID]                           |                        |                             |
+| Contract          | Contract#[ID]               | Contract#[ID]                          |                        |                             |
 
 ## HOW-TOs
 
@@ -71,10 +72,8 @@ This project generates Typescript types for the GraphQL API operations. In order
 
 
 ### Create a profile to start
-
-Execute the following mutation:
 ```
-mutation GettingStarted {
+mutation CreateAProfile {
   createProfile(input: {firstName: "John", lastName: "Doe", profession: "Engineer", type: CONTRACTOR, id: "john", password: "-TestUser1"}) {
     id
     firstName
@@ -82,6 +81,15 @@ mutation GettingStarted {
     profession
     type
     balance
+  }
+}
+```
+
+### Create a contract
+```
+mutation CreateAContract {
+  createContract(input: {terms: "None"}) {
+    id
   }
 }
 ```

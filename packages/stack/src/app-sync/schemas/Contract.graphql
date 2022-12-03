@@ -4,7 +4,7 @@ enum ContactStatus {
   TERMINATED
 }
 
-type Contract implements Audited {
+type Contract implements Audited @aws_cognito_user_pools {
   id: ID!
   terms: String!
   status: ContactStatus!
@@ -19,7 +19,6 @@ type Contract implements Audited {
 
 input CreateContractInput {
   terms: String!
-  status: ContactStatus!
 }
 
 ## Connections
@@ -39,5 +38,5 @@ extend type Query {
 ## Mutations
 
 extend type Mutation {
-  createContract(input: CreateContractInput!): Contract
+  createContract(input: CreateContractInput!): Contract @aws_cognito_user_pools
 }

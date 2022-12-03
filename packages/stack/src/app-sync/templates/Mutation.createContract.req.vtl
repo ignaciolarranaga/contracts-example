@@ -1,0 +1,22 @@
+#set($id = $util.autoUlid())
+{
+  "version" : "2018-05-29",
+  "operation" : "PutItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("Contract#$id"),
+    "SK": $util.dynamodb.toDynamoDBJson("Contract#$id")
+  },
+  "attributeValues": {
+    "__typename": $util.dynamodb.toDynamoDBJson("Contract"),
+    "id" : $util.dynamodb.toDynamoDBJson("$id"),
+    "terms": $util.dynamodb.toDynamoDBJson($ctx.args.input.terms),
+    "status": $util.dynamodb.toDynamoDBJson("NEW"),
+    "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+    "createdBy": $util.dynamodb.toDynamoDBJson("Profile#$ctx.identity.username"),
+    "lastModifiedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+    "lastModifiedBy": $util.dynamodb.toDynamoDBJson("Profile#$ctx.identity.username")
+  },
+  "condition" : {
+    "expression" : "attribute_not_exists(id)"
+  }
+}

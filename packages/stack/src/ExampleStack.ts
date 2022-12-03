@@ -20,7 +20,7 @@ export class ExampleStack extends Stack {
   ) {
     super(scope, id, props);
 
-    const { userPoolClient } = buildUserPool(this, params.env);
+    const { userPool, userPoolClient } = buildUserPool(this, params.env);
     const dynamoDBTable = buildDynamoDBTable(this, params.env);
     const graphQLResolversLambda = buildGraphQLResolversLambda(
       this,
@@ -29,6 +29,6 @@ export class ExampleStack extends Stack {
       userPoolClient
     );
 
-    buildAppSync(this, params.env, graphQLResolversLambda);
+    buildAppSync(this, params.env, userPool, dynamoDBTable, graphQLResolversLambda);
   }
 }

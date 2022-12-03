@@ -6,6 +6,8 @@ import {
   MappingTemplate,
   Schema,
 } from '@aws-cdk/aws-appsync-alpha';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
@@ -19,6 +21,8 @@ const GRAPHQL_RESPONSE_RESOLVER_TEMPLATE =
 export function buildAppSync(
   scope: Construct,
   env: Environment,
+  userPool: UserPool,
+  dynamoDBTable: Table,
   graphQLResolversLambda: IFunction
 ) {
   const appSync = new GraphqlApi(scope, 'ExampleApi', {
@@ -33,6 +37,12 @@ export function buildAppSync(
           expires: Expiration.after(Duration.days(365)),
         },
       },
+      additionalAuthorizationModes: [{
+        authorizationType: AuthorizationType.USER_POOL,
+        userPoolConfig: {
+          userPool
+        }
+      }],
     },
   });
 
@@ -45,6 +55,19 @@ export function buildAppSync(
     'ResolversLambdaDataSource',
     graphQLResolversLambda
   );
+  const dynamoDBTableDataSource = appSync.addDynamoDbDataSource('EPollsTable', dynamoDBTable);
+
+  // Resolvers
+  for (const operation of [
+    {typeName: 'Mutation', fieldName: 'createContract', dataSource: dynamoDBTableDataSource},
+  ]) {
+    operation.dataSource.createResolver({
+      typeName: operation.typeName,
+      fieldName: operation.fieldName,
+      requestMappingTemplate: MappingTemplate.fromFile(`src/app-sync/templates/${operation.typeName}.${operation.fieldName}.req.vtl`),
+      responseMappingTemplate: MappingTemplate.fromFile(`src/app-sync/templates/${operation.typeName}.${operation.fieldName}.res.vtl`),
+    });
+  }
 
   // Lambda resolvers
   for (const operation of [

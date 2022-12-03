@@ -140,7 +140,6 @@ export type ContractConnection = {
 };
 
 export type CreateContractInput = {
-  status: ContactStatus;
   terms: Scalars['String'];
 };
 
