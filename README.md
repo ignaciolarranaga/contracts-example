@@ -27,6 +27,7 @@ Notes:
 
 This project mainly uses:
 * [AWS CDK](https://aws.amazon.com/es/cdk/) for infrastructure as code
+* [AWS Cognito](https://aws.amazon.com/es/cognito/) for authentication and authorization
 * [AWS Appsync](https://aws.amazon.com/es/appsync/) for the GraphQL implementation
 * [AWS Lambda](https://aws.amazon.com/es/lambda/) for the backend logic
 * [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistence
