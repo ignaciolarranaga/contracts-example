@@ -23,6 +23,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
     SK: `Profile#${id}`,
     _typename: 'Profile',
 
+    id,
     firstName: event.arguments.input.firstName,
     lastName: event.arguments.input.lastName,
     profession: event.arguments.input.profession,
