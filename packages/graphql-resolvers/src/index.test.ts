@@ -1,6 +1,6 @@
 import { AppSyncResolverEvent, Context } from 'aws-lambda';
 
-import { getProfile } from 'resolvers/getProfile';
+import createProfile from 'resolvers/createProfile';
 import { handler } from '.';
 import errorCodes from 'error-codes';
 
@@ -11,20 +11,25 @@ export function mockFunction<T extends (...args: any[]) => any>(
   return fn as jest.MockedFunction<T>;
 }
 
-jest.mock('./resolvers/getProfile.ts');
-const getProfileHandlerMock = mockFunction(getProfile);
+jest.mock('./resolvers/createProfile.ts');
+const createProfileHandlerMock = mockFunction(createProfile);
 
 // The test does not need to have a maximum number of lines
 /* eslint max-lines-per-function: ["off"] */
 describe('handler', () => {
   const SAMPLE_HANDLER_INPUT_EVENT = {
     info: {
-      fieldName: 'getProfile',
-      parentTypeName: 'Query',
+      fieldName: 'createProfile',
+      parentTypeName: 'Mutation',
       variables: {},
     },
     arguments: {
-      id: '5a0cbb5b3b34530e7d42ee06',
+      input: {
+        firstName: 'John',
+        lastName: 'Doe',
+        profession: 'Engineer',
+        type: 'CONTRACTOR'
+      },
     },
   } as AppSyncResolverEvent<any>;
   const SAMPLE_CONTEXT = {} as Context;
@@ -34,7 +39,7 @@ describe('handler', () => {
 
     handler(SAMPLE_HANDLER_INPUT_EVENT, SAMPLE_CONTEXT, callbackMock);
 
-    expect(getProfileHandlerMock.mock.calls.length).toBe(1);
+    expect(createProfileHandlerMock.mock.calls.length).toBe(1);
   });
 
   it('should callback with the correct error when the type is not found', () => {
@@ -74,7 +79,7 @@ describe('handler', () => {
   it('should callback with the correct error when the resolver found an error', () => {
     const callbackMock = jest.fn();
     const SAMPLE_ERROR = 'Sample unexpected error';
-    getProfileHandlerMock.mockImplementation(() => {
+    createProfileHandlerMock.mockImplementation(() => {
       throw new Error(SAMPLE_ERROR);
     });
 

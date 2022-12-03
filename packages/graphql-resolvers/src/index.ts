@@ -1,8 +1,7 @@
 import { AppSyncResolverEvent, Context, Callback } from 'aws-lambda';
 
 import errorCodes from 'error-codes';
-import { getProfile } from 'resolvers/getProfile';
-import { createProfile } from 'resolvers/createProfile';
+import createProfile from 'resolvers/createProfile';
 
 const resolvers: {
   [type: string]: {
@@ -13,9 +12,6 @@ const resolvers: {
     ) => any;
   };
 } = {
-  Query: {
-    getProfile
-  },
   Mutation: {
     createProfile,
   },

@@ -7,7 +7,7 @@ import { AppSyncResolverEvent, Context, Callback } from 'aws-lambda';
  * @param callback The invocation callback to report errors
  * @returns The profile created
  */
- export async function createProfile(event: AppSyncResolverEvent<any>,
+ export default async function createProfile(event: AppSyncResolverEvent<any>,
   context: Context, callback: Callback): Promise<any> {
   return null;
 }
