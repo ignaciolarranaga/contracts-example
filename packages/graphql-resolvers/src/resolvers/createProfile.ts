@@ -1,7 +1,7 @@
-import { AppSyncResolverEvent } from 'aws-lambda';
-import { v4 as uuid } from 'uuid';
+import { AppSyncResolverEvent, AppSyncIdentityCognito } from 'aws-lambda';
 import AWS from 'aws-sdk';
-import { MutationCreateProfileArgs } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import { MutationCreateProfileArgs, Profile } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import { DynamoDBItem } from 'utils/DynamoDBItem';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
@@ -24,24 +24,29 @@ export default async function createProfile(
   await cognitoIdentityServiceProvider
     .signUp({
       ClientId: process.env.USER_POOL_CLIENT_ID!,
-      Username: event.arguments.input.username,
+      Username: event.arguments.input.id,
       Password: event.arguments.input.password,
     })
     .promise();
 
-  const id = uuid();
-  const item = {
-    PK: `Profile#${id}`,
-    SK: `Profile#${id}`,
+  const currentUser = event.identity ? (event.identity as AppSyncIdentityCognito).username : undefined;
+  const currentTime = new Date();
+  const item: Profile & DynamoDBItem = {
+    PK: `Profile#${event.arguments.input.id}`,
+    SK: `Profile#${event.arguments.input.id}`,
     _typename: 'Profile',
 
-    id,
-    username: event.arguments.input.username,
+    id: event.arguments.input.id,
     firstName: event.arguments.input.firstName,
     lastName: event.arguments.input.lastName,
     profession: event.arguments.input.profession,
     type: event.arguments.input.type,
     balance: 0,
+
+    createdAt: currentTime.toISOString(),
+    createdBy: currentUser,
+    lastModifiedAt: currentTime.toISOString(),
+    lastModifiedBy: currentUser,
   };
 
   await documentClient

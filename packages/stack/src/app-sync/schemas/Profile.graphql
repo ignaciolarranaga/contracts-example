@@ -3,18 +3,23 @@ enum ProfileType {
   CONTRACTOR
 }
 
-type Profile {
+type Profile implements Audited {
   id: ID!
   firstName: String!
   lastName: String!
   profession: String!
   balance: Float!
   type: ProfileType!
+
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String
+  lastModifiedBy: String
 }
 
 ## Inputs
 input CreateProfileInput {
-  username: String!
+  id: String!
   password: String!
   firstName: String!
   lastName: String!

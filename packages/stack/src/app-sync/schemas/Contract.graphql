@@ -4,15 +4,22 @@ enum ContactStatus {
   TERMINATED
 }
 
-type Contract {
+type Contract implements Audited {
   id: ID!
   terms: String!
   status: ContactStatus!
 
   createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-  createdBy: String
-  updatedBy: String
+  lastModifiedAt: AWSDateTime!
+  createdBy: String!
+  lastModifiedBy: String!
+}
+
+## Inputs
+
+input CreateContractInput {
+  terms: String!
+  status: ContactStatus!
 }
 
 ## Connections
@@ -27,4 +34,10 @@ type ContractConnection {
 extend type Query {
   getContract(id: ID!): Contract
   listContracts(limit: Int, nextToken: String): ContractConnection
+}
+
+## Mutations
+
+extend type Mutation {
+  createContract(input: CreateContractInput!): Contract
 }

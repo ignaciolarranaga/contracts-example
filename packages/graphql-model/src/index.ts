@@ -86,6 +86,13 @@ export type Scalars = {
   AWSURL: any;
 };
 
+export type Audited = {
+  createdAt: Scalars['AWSDateTime'];
+  createdBy?: Maybe<Scalars['String']>;
+  lastModifiedAt: Scalars['AWSDateTime'];
+  lastModifiedBy?: Maybe<Scalars['String']>;
+};
+
 export type BestClientsInput = {
   from?: InputMaybe<Scalars['AWSDateTime']>;
   to?: InputMaybe<Scalars['AWSDateTime']>;
@@ -115,15 +122,15 @@ export enum ContactStatus {
   Terminated = 'TERMINATED'
 }
 
-export type Contract = {
+export type Contract = Audited & {
   __typename?: 'Contract';
   createdAt: Scalars['AWSDateTime'];
-  createdBy?: Maybe<Scalars['String']>;
+  createdBy: Scalars['String'];
   id: Scalars['ID'];
+  lastModifiedAt: Scalars['AWSDateTime'];
+  lastModifiedBy: Scalars['String'];
   status: ContactStatus;
   terms: Scalars['String'];
-  updatedAt: Scalars['AWSDateTime'];
-  updatedBy?: Maybe<Scalars['String']>;
 };
 
 export type ContractConnection = {
@@ -132,14 +139,19 @@ export type ContractConnection = {
   nextToken?: Maybe<Scalars['String']>;
 };
 
+export type CreateContractInput = {
+  status: ContactStatus;
+  terms: Scalars['String'];
+};
+
 /** # Inputs */
 export type CreateProfileInput = {
   firstName: Scalars['String'];
+  id: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
   profession: Scalars['String'];
   type: ProfileType;
-  username: Scalars['String'];
 };
 
 export type Job = {
@@ -172,9 +184,15 @@ export type MakeProfileDepositInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createContract?: Maybe<Contract>;
   createProfile?: Maybe<Profile>;
   makeProfileDeposit?: Maybe<Profile>;
   payJob?: Maybe<Job>;
+};
+
+
+export type MutationCreateContractArgs = {
+  input: CreateContractInput;
 };
 
 
@@ -192,11 +210,15 @@ export type MutationPayJobArgs = {
   id: Scalars['ID'];
 };
 
-export type Profile = {
+export type Profile = Audited & {
   __typename?: 'Profile';
   balance: Scalars['Float'];
+  createdAt: Scalars['AWSDateTime'];
+  createdBy?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['ID'];
+  lastModifiedAt: Scalars['AWSDateTime'];
+  lastModifiedBy?: Maybe<Scalars['String']>;
   lastName: Scalars['String'];
   profession: Scalars['String'];
   type: ProfileType;

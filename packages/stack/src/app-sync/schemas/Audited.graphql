@@ -1,0 +1,6 @@
+interface Audited {
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String
+  lastModifiedBy: String
+}

@@ -7,6 +7,13 @@ directive @aws_api_key on OBJECT | FIELD_DEFINITION
 
 directive @aws_cognito_user_pools(cognito_groups: [String]) on OBJECT | FIELD_DEFINITION
 
+interface Audited {
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String
+  lastModifiedBy: String
+}
+
 """
 The AWSDate scalar type represents a valid extended ISO 8601 Date string. In
 other words, this scalar type accepts date strings of the form YYYY-MM-DD. This
@@ -119,14 +126,14 @@ enum ContactStatus {
   TERMINATED
 }
 
-type Contract {
+type Contract implements Audited {
   id: ID!
   terms: String!
   status: ContactStatus!
   createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-  createdBy: String
-  updatedBy: String
+  lastModifiedAt: AWSDateTime!
+  createdBy: String!
+  lastModifiedBy: String!
 }
 
 type ContractConnection {
@@ -134,9 +141,14 @@ type ContractConnection {
   nextToken: String
 }
 
+input CreateContractInput {
+  terms: String!
+  status: ContactStatus!
+}
+
 """# Inputs"""
 input CreateProfileInput {
-  username: String!
+  id: String!
   password: String!
   firstName: String!
   lastName: String!
@@ -172,17 +184,22 @@ input MakeProfileDepositInput {
 
 type Mutation {
   payJob(id: ID!): Job
+  createContract(input: CreateContractInput!): Contract
   createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
 }
 
-type Profile {
+type Profile implements Audited {
   id: ID!
   firstName: String!
   lastName: String!
   profession: String!
   balance: Float!
   type: ProfileType!
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String
+  lastModifiedBy: String
 }
 
 enum ProfileType {
