@@ -34,7 +34,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createProfile(input: CreateProfileInput!): Profile
+  createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
 
-  makeProfileDeposit(input: MakeProfileDepositInput!): Profile
+  makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
 }

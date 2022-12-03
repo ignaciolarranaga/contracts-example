@@ -3,6 +3,10 @@ schema {
   mutation: Mutation   
 }
 
+directive @aws_api_key on OBJECT | FIELD_DEFINITION
+
+directive @aws_cognito_user_pools(cognito_groups: [String]) on OBJECT | FIELD_DEFINITION
+
 """
 The AWSDate scalar type represents a valid extended ISO 8601 Date string. In
 other words, this scalar type accepts date strings of the form YYYY-MM-DD. This
@@ -168,8 +172,8 @@ input MakeProfileDepositInput {
 
 type Mutation {
   payJob(id: ID!): Job
-  createProfile(input: CreateProfileInput!): Profile
-  makeProfileDeposit(input: MakeProfileDepositInput!): Profile
+  createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
+  makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
 }
 
 type Profile {

@@ -68,3 +68,20 @@ changes to be produced automatically since the schema doesn't change so frequent
 ### Regenerate the GraphQL Schema Types
 
 This project generates Typescript types for the GraphQL API operations. In order to regenerate those types you must execute `npm run regenerate-graphql-schema-types`
+
+
+### Create a profile to start
+
+Execute the following mutation:
+```
+mutation GettingStarted {
+  createProfile(input: {firstName: "Ignacio", lastName: "Larrañaga", profession: "Engineer", type: CONTRACTOR, username: "ignaciolarranaga", password: "-TestUser1"}) {
+    id
+    firstName
+    lastName
+    profession
+    type
+    balance
+  }
+}
+```
