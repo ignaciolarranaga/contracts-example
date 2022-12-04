@@ -46,8 +46,8 @@ export default async function createProfile(
         ConditionCheck: {
           TableName: process.env.TABLE_NAME!,
           Key: {
-            PK: `Profile#${currentUser}`,
-            SK: `Profile#${currentUser}`,
+            PK: `Profile#${item.contractorId}`,
+            SK: `Profile#${item.contractorId}`,
           },
           ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
           ExpressionAttributeNames: {
@@ -58,7 +58,23 @@ export default async function createProfile(
           }
         }
       },
-      {
+      { // Client profile exits and it is a contractor
+        ConditionCheck: {
+          TableName: process.env.TABLE_NAME!,
+          Key: {
+            PK: `Profile#${item.clientId}`,
+            SK: `Profile#${item.clientId}`,
+          },
+          ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
+          ExpressionAttributeNames: {
+            '#type': 'type'
+          },
+          ExpressionAttributeValues: {
+            ':client_type': 'CLIENT' // ProfileType.Client
+          }
+        }
+      },
+      { // Insert the new contract
         Put: {
           TableName: process.env.TABLE_NAME!,
           Item: item,
