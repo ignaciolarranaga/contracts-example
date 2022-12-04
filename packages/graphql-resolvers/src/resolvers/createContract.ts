@@ -35,6 +35,11 @@ export default async function createProfile(
     terms: event.arguments.input.terms,
     status: 'NEW' as ContractStatus, //ContractStatus.New,
 
+    PK1: `Contractor#${currentUser}`,
+    SK1: 'NEW',
+    PK2: `Client#${event.arguments.input.clientId}`,
+    SK2: 'NEW',
+
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,
     lastModifiedAt: currentTime.toISOString(),

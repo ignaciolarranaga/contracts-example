@@ -42,10 +42,18 @@ This project mainly uses:
 
 This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistence and particularly the [single-table design pattern](https://aws.amazon.com/es/blogs/compute/creating-a-single-table-design-with-amazon-dynamodb/).
 
-| Entity            | PK                          | SK                                     | PK1                    | SK1                         |
-|-------------------|-----------------------------|----------------------------------------|------------------------|-----------------------------|
-| Profile           | Profile#[USERNAME]          | Profile#[USERNAME]                     |                        |                             |
-| Contract          | Contract#[ID]               | Contract#[ID]                          |                        |                             |
+| Entity            | PK                 | SK                 | PK1                   | SK1            | PK2                   | SK2            |
+|-------------------|--------------------|--------------------|-----------------------|----------------|-----------------------|----------------|
+| Profile           | Profile#[USERNAME] | Profile#[USERNAME] |                       |                |                       |                |
+| Contract          | Contract#[ID]      | Contract#[ID]      | Contractor#[USERNAME] | [STATUS]       | Client#[USERNAME]     | [STATUS]       |
+
+### Access Patterns
+
+* Access Contract by ID: `PK = Contract#[ID] AND SK = Contract#[ID]`
+* List Non Terminated Contracts by Profile (Client or Contractor):
+  * Non-Terminated Contracts for a Contractor: `PK1 = Contractor#[USERNAME] AND SK1 BETWEEN 1 AND 2`
+  * Non-Terminated Contracts for a Client: `PK2 = Client#[USERNAME] AND SK2 BETWEEN 1 AND 2`
+  * Please note that: IN_PROGRESS < NEW < TERMINATED if ordered alphabetically
 
 ## HOW-TOs
 

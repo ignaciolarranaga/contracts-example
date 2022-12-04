@@ -6,6 +6,7 @@ import { Environment } from './Environment';
 
 export enum DynamoDBIndexes {
   GSI1 = 'GSI1',
+  GSI2 = 'GSI2',
 }
 
 export function buildDynamoDBTable(scope: Construct, env: Environment): Table {
@@ -21,6 +22,11 @@ export function buildDynamoDBTable(scope: Construct, env: Environment): Table {
     indexName: DynamoDBIndexes.GSI1,
     partitionKey: { name: 'PK1', type: AttributeType.STRING },
     sortKey: { name: 'SK1', type: AttributeType.STRING },
+  });
+  table.addGlobalSecondaryIndex({
+    indexName: DynamoDBIndexes.GSI2,
+    partitionKey: { name: 'PK2', type: AttributeType.STRING },
+    sortKey: { name: 'SK2', type: AttributeType.STRING },
   });
 
   return table;
