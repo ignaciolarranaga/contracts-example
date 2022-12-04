@@ -1,19 +1,24 @@
-import { AppSyncResolverEvent, AppSyncIdentityCognito } from 'aws-lambda';
+import { AppSyncResolverEvent, AppSyncIdentityCognito, Context, Callback } from 'aws-lambda';
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
 import { MutationCreateContractArgs, Contract, ContractStatus, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
+import errorCodes from 'error-codes';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 /**
  * Creates a new profile
  * @param event The AppSync event received
+ * @param context The context of the invocation
+ * @param callback The invocation callback to report errors
  * @returns The profile created
  */
 export default async function createProfile(
-  event: AppSyncResolverEvent<MutationCreateContractArgs>
+  event: AppSyncResolverEvent<MutationCreateContractArgs>,
+  context: Context,
+  callback: Callback
 ): Promise<any> {
   const id = uuid();
   const currentUser = (event.identity as AppSyncIdentityCognito).username!;
@@ -35,6 +40,11 @@ export default async function createProfile(
     lastModifiedAt: currentTime.toISOString(),
     lastModifiedBy: currentUser,
   };
+
+  if (item.contractorId === item.clientId) {
+    callback(errorCodes.CAN_NOT_SELF_CONTRACT);
+    return;
+  }
 
   console.log(
     `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
