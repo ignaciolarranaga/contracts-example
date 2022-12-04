@@ -17,11 +17,14 @@ Notes:
 * This project uses [Lerna](https://lerna.js.org/) for the building of the monorepo.
 * We do not rebuild the code on deploy to improve the performance of the development workflow, so remember to run `npm run build && npm run deploy`.
 * We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging.
+* There are useful GraphQL queries on [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md)
 
 ## Useful commands
 
 * `npm run lint` Check lint issues on the different packages
 * `npm run prettier` Check prettier issues on the different packages
+* `npm run regenerate-graphql-schema` Regenerates the GraphQL schema from the individual schema files
+* `npm run regenerate-graphql-schema-types` Regenerates the GraphQL schema types in [graphql-model](packages/graphql-model/)
 
 ## Technical Stack
 
@@ -41,7 +44,7 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 
 | Entity            | PK                          | SK                                     | PK1                    | SK1                         |
 |-------------------|-----------------------------|----------------------------------------|------------------------|-----------------------------|
-| Profile           | Profile#[ID]                | Profile#[ID]                           |                        |                             |
+| Profile           | Profile#[USERNAME]          | Profile#[USERNAME]                     |                        |                             |
 | Contract          | Contract#[ID]               | Contract#[ID]                          |                        |                             |
 
 ## HOW-TOs
