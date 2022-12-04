@@ -1,0 +1,18 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "Query",
+  "query" : {
+    "expression" : "PK = :pk AND begins_with(SK, :prefix)",
+    "expressionValues": {
+      ":pk" : $util.dynamodb.toDynamoDBJson("Profile#$ctx.identity.username"),
+      ":prefix" : $util.dynamodb.toDynamoDBJson("Contract#")
+    }
+  },
+#if ( !$util.isNullOrEmpty($ctx.args.nextToken) )
+  "nextToken" : $util.toJson($ctx.args.nextToken),
+#end
+#if ( !$util.isNullOrEmpty($ctx.args.limit) )
+  "limit" : $util.toJson($ctx.args.limit),
+#end
+  "consistentRead" : false,
+}

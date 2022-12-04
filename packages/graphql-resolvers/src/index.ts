@@ -2,6 +2,7 @@ import { AppSyncResolverEvent, Context, Callback } from 'aws-lambda';
 
 import errorCodes from 'error-codes';
 import createProfile from 'resolvers/createProfile';
+import createContract from 'resolvers/createContract';
 
 const resolvers: {
   [type: string]: {
@@ -13,6 +14,7 @@ const resolvers: {
   };
 } = {
   Mutation: {
+    createContract,
     createProfile,
   },
 };

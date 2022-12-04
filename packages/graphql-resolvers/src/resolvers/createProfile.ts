@@ -50,7 +50,11 @@ export default async function createProfile(
   };
 
   await documentClient
-    .put({ TableName: process.env.TABLE_NAME!, Item: item })
+    .put({
+      TableName: process.env.TABLE_NAME!,
+      Item: item,
+      ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+    })
     .promise();
 
   return item;

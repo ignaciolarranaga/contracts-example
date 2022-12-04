@@ -59,8 +59,8 @@ export function buildAppSync(
 
   // Resolvers
   for (const operation of [
-    {typeName: 'Mutation', fieldName: 'createContract', dataSource: dynamoDBTableDataSource},
     {typeName: 'Query', fieldName: 'getContract', dataSource: dynamoDBTableDataSource},
+    {typeName: 'Query', fieldName: 'listContracts', dataSource: dynamoDBTableDataSource},
   ]) {
     operation.dataSource.createResolver({
       typeName: operation.typeName,
@@ -72,6 +72,7 @@ export function buildAppSync(
 
   // Lambda resolvers
   for (const operation of [
+    { typeName: 'Mutation', fieldName: 'createContract' },
     { typeName: 'Mutation', fieldName: 'createProfile' },
     { typeName: 'Mutation', fieldName: 'makeProfileDeposit' },
   ]) {

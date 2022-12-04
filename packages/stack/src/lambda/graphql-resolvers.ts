@@ -54,7 +54,10 @@ export function buildGraphQLResolversLambda(
 
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: ['dynamodb:PutItem'],
+      actions: [
+        'dynamodb:ConditionCheckItem',
+        'dynamodb:PutItem',
+      ],
       resources: [dynamoDBTable.tableArn],
     })
   );

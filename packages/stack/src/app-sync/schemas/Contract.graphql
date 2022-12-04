@@ -1,4 +1,4 @@
-enum ContactStatus {
+enum ContractStatus {
   NEW
   IN_PROGRESS
   TERMINATED
@@ -6,8 +6,11 @@ enum ContactStatus {
 
 type Contract implements Audited @aws_cognito_user_pools {
   id: ID!
+  contractorId: ID!
+  clientId: ID!
+  jobId: ID!
   terms: String!
-  status: ContactStatus!
+  status: ContractStatus!
 
   createdAt: AWSDateTime!
   lastModifiedAt: AWSDateTime!
@@ -17,7 +20,10 @@ type Contract implements Audited @aws_cognito_user_pools {
 
 ## Inputs
 
+# A contract is created by a contractor with a client
 input CreateContractInput {
+  clientId: ID!
+  jobId: ID!
   terms: String!
 }
 
@@ -32,7 +38,7 @@ type ContractConnection {
 
 extend type Query {
   getContract(id: ID!): Contract @aws_cognito_user_pools
-  listContracts(limit: Int, nextToken: String): ContractConnection
+  listContracts(limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
 }
 
 ## Mutations

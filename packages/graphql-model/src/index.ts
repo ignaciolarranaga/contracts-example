@@ -116,20 +116,17 @@ export type BestProfessionInput = {
   start?: InputMaybe<Scalars['AWSDateTime']>;
 };
 
-export enum ContactStatus {
-  InProgress = 'IN_PROGRESS',
-  New = 'NEW',
-  Terminated = 'TERMINATED'
-}
-
 export type Contract = Audited & {
   __typename?: 'Contract';
+  clientId: Scalars['ID'];
+  contractorId: Scalars['ID'];
   createdAt: Scalars['AWSDateTime'];
   createdBy: Scalars['String'];
   id: Scalars['ID'];
+  jobId: Scalars['ID'];
   lastModifiedAt: Scalars['AWSDateTime'];
   lastModifiedBy: Scalars['String'];
-  status: ContactStatus;
+  status: ContractStatus;
   terms: Scalars['String'];
 };
 
@@ -139,7 +136,16 @@ export type ContractConnection = {
   nextToken?: Maybe<Scalars['String']>;
 };
 
+export enum ContractStatus {
+  InProgress = 'IN_PROGRESS',
+  New = 'NEW',
+  Terminated = 'TERMINATED'
+}
+
+/** A contract is created by a contractor with a client */
 export type CreateContractInput = {
+  clientId: Scalars['ID'];
+  jobId: Scalars['ID'];
   terms: Scalars['String'];
 };
 
