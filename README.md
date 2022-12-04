@@ -38,6 +38,14 @@ This project mainly uses:
 * [ESLint](https://typescript-eslint.io/) for code validation
 * [Prettier](https://prettier.io/) for code formatting
 
+Some Q&A:
+* Q: Why we choose DynamoDB over for example a traditional relational database?
+  * A: Because the queries that support the implementation will scale up-to levels that any relational database can reach
+* Q: Why we choose Lambda instead of a express-server?
+  * A: Because the implementation will self-scale rather than us having to setup and manage a cluster
+* Q: Why we choose GraphQL instead of REST?
+  * A: Because facilitates the implementation of the clients by leaving them to define how to use the API as well as the type system expressiveness value add
+
 ## Entities
 
 This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistence and particularly the [single-table design pattern](https://aws.amazon.com/es/blogs/compute/creating-a-single-table-design-with-amazon-dynamodb/).
