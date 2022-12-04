@@ -26,6 +26,7 @@ export class ExampleStack extends Stack {
       this,
       params.env,
       dynamoDBTable,
+      userPool,
       userPoolClient
     );
 

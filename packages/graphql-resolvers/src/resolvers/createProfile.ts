@@ -29,6 +29,12 @@ export default async function createProfile(
     })
     .promise();
 
+  await cognitoIdentityServiceProvider.adminAddUserToGroup({
+    UserPoolId: process.env.USER_POOL_ID!,
+    GroupName: event.arguments.input.type,
+    Username: event.arguments.input.id
+  }).promise();
+
   const currentUser = event.identity ? (event.identity as AppSyncIdentityCognito).username : undefined;
   const currentTime = new Date();
   const item: Profile & DynamoDBItem = {

@@ -8,7 +8,7 @@ import {
 } from 'aws-cdk-lib/aws-lambda';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import { UserPoolClient } from 'aws-cdk-lib/aws-cognito';
+import { UserPool, UserPoolClient } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
@@ -17,10 +17,11 @@ export function buildGraphQLResolversLambda(
   scope: Construct,
   env: Environment,
   dynamoDBTable: Table,
+  userPool: UserPool,
   userPoolClient: UserPoolClient
 ) {
   const librariesLayer = new LayerVersion(scope, 'GraphQLResolversLibraries', {
-    layerVersionName: `graphql-resolvers-libraries-${env}`,
+    layerVersionName: `example-graphql-resolvers-libraries-${env}`,
     description: 'The GraphQL resolvers libraries layer',
     code: Code.fromAsset('../graphql-resolvers-libraries', {
       bundling: {
@@ -37,7 +38,7 @@ export function buildGraphQLResolversLambda(
   });
 
   const lambda = new Function(scope, 'GraphQLResolvers', {
-    functionName: `graphql-resolvers-${env}`,
+    functionName: `example-graphql-resolvers-${env}`,
     description: 'The resolvers of the GraphQL API',
     runtime: Runtime.NODEJS_16_X,
     code: Code.fromAsset('../graphql-resolvers/dist'),
@@ -46,12 +47,23 @@ export function buildGraphQLResolversLambda(
     environment: {
       ENV: env,
       TABLE_NAME: dynamoDBTable.tableName,
+      USER_POOL_ID: userPool.userPoolId,
       USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
     },
     tracing: Tracing.ACTIVE,
     timeout: Duration.seconds(15), // Incrementing timeout due mongo connection
   });
 
+  // Add Permissions to Modify Users
+  lambda.addToRolePolicy(
+    new PolicyStatement({
+      actions: [
+        'cognito-idp:AdminAddUserToGroup',
+      ],
+      resources: [userPool.userPoolArn],
+    })
+  );
+  // Add Permissions Over the DynamoDB Table
   lambda.addToRolePolicy(
     new PolicyStatement({
       actions: [
