@@ -34,6 +34,17 @@ mutation CreateAContract {
 }
 ```
 
+## List contracts
+```
+query ListContracts {
+  listContracts {
+    items {
+      id
+    }
+  }
+}
+```
+
 ## Get a contract
 ```
 query GetAContract {

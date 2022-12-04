@@ -29,7 +29,7 @@ input CreateContractInput {
 
 ## Connections
 
-type ContractConnection {
+type ContractConnection @aws_cognito_user_pools {
   items: [Contract!]
   nextToken: String
 }
