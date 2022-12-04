@@ -1,11 +1,25 @@
 {
   "version" : "2017-02-28",
   "operation" : "Query",
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+  "index": "GSI1",
+#else
+  "index": "GSI2",
+#end
   "query" : {
-    "expression" : "PK = :pk AND begins_with(SK, :prefix)",
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+    "expression" : "PK1 = :pk AND SK1 BETWEEN :min AND :max",
+#else
+    "expression" : "PK2 = :pk AND SK2 BETWEEN :min AND :max",
+#end
     "expressionValues": {
-      ":pk" : $util.dynamodb.toDynamoDBJson("Profile#$ctx.identity.username"),
-      ":prefix" : $util.dynamodb.toDynamoDBJson("Contract#")
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+      ":pk" : $util.dynamodb.toDynamoDBJson("Contractor#$ctx.identity.username"),
+#else
+      ":pk" : $util.dynamodb.toDynamoDBJson("Client#$ctx.identity.username"),
+#end
+      ":min" : $util.dynamodb.toDynamoDBJson('IN_PROGRESS'),
+      ":max" : $util.dynamodb.toDynamoDBJson('NEW')
     }
   },
 #if ( !$util.isNullOrEmpty($ctx.args.nextToken) )
