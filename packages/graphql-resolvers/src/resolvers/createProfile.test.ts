@@ -10,22 +10,23 @@ import { v4 as uuid } from 'uuid';
 import { init } from 'utils/test-utilities';
 
 const CREATE_A_PROFILE_QUERY = /* GraphQL */ `
-mutation CreateProfiles($input: CreateProfileInput!) {
-  createProfile(input: $input) {
-    id
-    firstName
-    lastName
-    profession
-    type
-    balance
+  mutation CreateProfiles($input: CreateProfileInput!) {
+    createProfile(input: $input) {
+      id
+      firstName
+      lastName
+      profession
+      type
+      balance
+    }
   }
-}`;
+`;
 
 init();
 
 describe('createProfile', () => {
   test('must be able to create a profile', async () => {
-    const input : CreateProfileInput = {
+    const input: CreateProfileInput = {
       id: uuid(),
       password: '-Secret1',
       firstName: 'John',
