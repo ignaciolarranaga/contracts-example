@@ -4,3 +4,6 @@ generates:
   src/index.ts:
     plugins:
       - "typescript"
+    config:
+      namingConvention:
+        enumValues: change-case-all#constantCase
