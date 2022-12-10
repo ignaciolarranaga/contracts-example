@@ -18,11 +18,16 @@
     "lint-and-fix": "eslint . --config ../../.eslintrc --ext .ts --fix",
     "prettier": "prettier --config ../../.prettierrc --ignore-path .prettierignore --check \"**/*.+(js|ts|json)\"",
     "format": "prettier --config ../../.prettierrc --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
-    "test": "jest"
+    "test": "jest",
+    "preit": "node prepare.js",
+    "it": "jest -c jest-it.config.js"
   },
   "keywords": [],
   "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
   "devDependencies": {
+    "@aws-amplify/api": "^5.0.5",
+    "@aws-amplify/auth": "^5.0.5",
+    "@aws-amplify/core": "^5.0.5",
     "@types/aws-lambda": "^8.10.107",
     "@types/jest": "^29.1.1",
     "@types/mongoose": "^5.11.97",

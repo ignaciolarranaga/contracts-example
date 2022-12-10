@@ -1,7 +1,14 @@
 *.js
-!jest.config.js
 *.d.ts
 node_modules
+
+# Deployment configuration
+!prepare.js
+deployment-config.json
+
+# Jest configurations
+!jest.config.js
+!jest-it.config.js
 
 # Build output
 dist
