@@ -137,9 +137,9 @@ export type ContractConnection = {
 };
 
 export enum ContractStatus {
-  InProgress = 'IN_PROGRESS',
-  New = 'NEW',
-  Terminated = 'TERMINATED'
+  IN_PROGRESS = 'IN_PROGRESS',
+  NEW = 'NEW',
+  TERMINATED = 'TERMINATED'
 }
 
 /** A contract is created by a contractor with a client */
@@ -230,8 +230,8 @@ export type Profile = Audited & {
 };
 
 export enum ProfileType {
-  Client = 'CLIENT',
-  Contractor = 'CONTRACTOR'
+  CLIENT = 'CLIENT',
+  CONTRACTOR = 'CONTRACTOR'
 }
 
 export type Query = {
