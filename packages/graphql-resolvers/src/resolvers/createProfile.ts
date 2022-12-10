@@ -1,6 +1,9 @@
 import { AppSyncResolverEvent, AppSyncIdentityCognito } from 'aws-lambda';
 import AWS from 'aws-sdk';
-import { MutationCreateProfileArgs, Profile } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import {
+  MutationCreateProfileArgs,
+  Profile,
+} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -29,13 +32,17 @@ export default async function createProfile(
     })
     .promise();
 
-  await cognitoIdentityServiceProvider.adminAddUserToGroup({
-    UserPoolId: process.env.USER_POOL_ID!,
-    GroupName: event.arguments.input.type,
-    Username: event.arguments.input.id
-  }).promise();
+  await cognitoIdentityServiceProvider
+    .adminAddUserToGroup({
+      UserPoolId: process.env.USER_POOL_ID!,
+      GroupName: event.arguments.input.type,
+      Username: event.arguments.input.id,
+    })
+    .promise();
 
-  const currentUser = event.identity ? (event.identity as AppSyncIdentityCognito).username : undefined;
+  const currentUser = event.identity
+    ? (event.identity as AppSyncIdentityCognito).username
+    : undefined;
   const currentTime = new Date();
   const item: Profile & DynamoDBItem = {
     PK: `Profile#${event.arguments.input.id}`,
@@ -59,7 +66,8 @@ export default async function createProfile(
     .put({
       TableName: process.env.TABLE_NAME!,
       Item: item,
-      ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+      ConditionExpression:
+        'attribute_not_exists(PK) AND attribute_not_exists(SK)',
     })
     .promise();
 

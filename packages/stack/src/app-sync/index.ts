@@ -18,7 +18,7 @@ const GRAPHQL_REQUEST_RESOLVER_TEMPLATE =
 const GRAPHQL_RESPONSE_RESOLVER_TEMPLATE =
   'src/app-sync/templates/resolvers.res.vtl';
 
-export function buildAppSync(
+export function buildAppSyncApi(
   scope: Construct,
   env: Environment,
   userPool: UserPool,
@@ -37,12 +37,14 @@ export function buildAppSync(
           expires: Expiration.after(Duration.days(365)),
         },
       },
-      additionalAuthorizationModes: [{
-        authorizationType: AuthorizationType.USER_POOL,
-        userPoolConfig: {
-          userPool
-        }
-      }],
+      additionalAuthorizationModes: [
+        {
+          authorizationType: AuthorizationType.USER_POOL,
+          userPoolConfig: {
+            userPool,
+          },
+        },
+      ],
     },
   });
 
@@ -55,18 +57,33 @@ export function buildAppSync(
     'ResolversLambdaDataSource',
     graphQLResolversLambda
   );
-  const dynamoDBTableDataSource = appSync.addDynamoDbDataSource('ExampleTable', dynamoDBTable);
+  const dynamoDBTableDataSource = appSync.addDynamoDbDataSource(
+    'ExampleTable',
+    dynamoDBTable
+  );
 
   // Resolvers
   for (const operation of [
-    {typeName: 'Query', fieldName: 'getContract', dataSource: dynamoDBTableDataSource},
-    {typeName: 'Query', fieldName: 'listContracts', dataSource: dynamoDBTableDataSource},
+    {
+      typeName: 'Query',
+      fieldName: 'getContract',
+      dataSource: dynamoDBTableDataSource,
+    },
+    {
+      typeName: 'Query',
+      fieldName: 'listContracts',
+      dataSource: dynamoDBTableDataSource,
+    },
   ]) {
     operation.dataSource.createResolver({
       typeName: operation.typeName,
       fieldName: operation.fieldName,
-      requestMappingTemplate: MappingTemplate.fromFile(`src/app-sync/templates/${operation.typeName}.${operation.fieldName}.req.vtl`),
-      responseMappingTemplate: MappingTemplate.fromFile(`src/app-sync/templates/${operation.typeName}.${operation.fieldName}.res.vtl`),
+      requestMappingTemplate: MappingTemplate.fromFile(
+        `src/app-sync/templates/${operation.typeName}.${operation.fieldName}.req.vtl`
+      ),
+      responseMappingTemplate: MappingTemplate.fromFile(
+        `src/app-sync/templates/${operation.typeName}.${operation.fieldName}.res.vtl`
+      ),
     });
   }
 

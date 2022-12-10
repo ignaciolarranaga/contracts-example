@@ -29,14 +29,14 @@ export function buildUserPool(scope: Stack, env: Environment) {
     userPoolId: userPool.userPoolId,
     groupName: 'CONTRACTOR',
     description: 'Contractors',
-    precedence: 1
+    precedence: 1,
   }).addDependsOn(userPool.node.defaultChild as CfnResource);
 
   new CfnUserPoolGroup(scope, 'ClientsGroup', {
     userPoolId: userPool.userPoolId,
     groupName: 'CLIENT',
     description: 'Clients',
-    precedence: 2
+    precedence: 2,
   }).addDependsOn(userPool.node.defaultChild as CfnResource);
 
   return { userPool, userPoolClient };

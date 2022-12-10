@@ -57,19 +57,14 @@ export function buildGraphQLResolversLambda(
   // Add Permissions to Modify Users
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: [
-        'cognito-idp:AdminAddUserToGroup',
-      ],
+      actions: ['cognito-idp:AdminAddUserToGroup'],
       resources: [userPool.userPoolArn],
     })
   );
   // Add Permissions Over the DynamoDB Table
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: [
-        'dynamodb:ConditionCheckItem',
-        'dynamodb:PutItem',
-      ],
+      actions: ['dynamodb:ConditionCheckItem', 'dynamodb:PutItem'],
       resources: [dynamoDBTable.tableArn],
     })
   );

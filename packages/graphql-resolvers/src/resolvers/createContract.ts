@@ -1,8 +1,18 @@
-import { AppSyncResolverEvent, AppSyncIdentityCognito, Context, Callback } from 'aws-lambda';
+import {
+  AppSyncResolverEvent,
+  AppSyncIdentityCognito,
+  Context,
+  Callback,
+} from 'aws-lambda';
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
-import { MutationCreateContractArgs, Contract, ContractStatus, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import {
+  MutationCreateContractArgs,
+  Contract,
+  ContractStatus,
+  ProfileType,
+} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
 import errorCodes from 'error-codes';
 
@@ -55,49 +65,57 @@ export default async function createProfile(
     `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
   );
 
-  await documentClient.transactWrite({
-    TransactItems: [
-      { // Contractor profile exits and it is a contractor
-        ConditionCheck: {
-          TableName: process.env.TABLE_NAME!,
-          Key: {
-            PK: `Profile#${item.contractorId}`,
-            SK: `Profile#${item.contractorId}`,
+  await documentClient
+    .transactWrite({
+      TransactItems: [
+        {
+          // Contractor profile exits and it is a contractor
+          ConditionCheck: {
+            TableName: process.env.TABLE_NAME!,
+            Key: {
+              PK: `Profile#${item.contractorId}`,
+              SK: `Profile#${item.contractorId}`,
+            },
+            ConditionExpression:
+              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
+            ExpressionAttributeNames: {
+              '#type': 'type',
+            },
+            ExpressionAttributeValues: {
+              ':contractor_type': 'CONTRACTOR', // ProfileType.Contractor
+            },
           },
-          ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
-          ExpressionAttributeNames: {
-            '#type': 'type'
+        },
+        {
+          // Client profile exits and it is a contractor
+          ConditionCheck: {
+            TableName: process.env.TABLE_NAME!,
+            Key: {
+              PK: `Profile#${item.clientId}`,
+              SK: `Profile#${item.clientId}`,
+            },
+            ConditionExpression:
+              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
+            ExpressionAttributeNames: {
+              '#type': 'type',
+            },
+            ExpressionAttributeValues: {
+              ':client_type': 'CLIENT', // ProfileType.Client
+            },
           },
-          ExpressionAttributeValues: {
-            ':contractor_type': 'CONTRACTOR' // ProfileType.Contractor
-          }
-        }
-      },
-      { // Client profile exits and it is a contractor
-        ConditionCheck: {
-          TableName: process.env.TABLE_NAME!,
-          Key: {
-            PK: `Profile#${item.clientId}`,
-            SK: `Profile#${item.clientId}`,
+        },
+        {
+          // Insert the new contract
+          Put: {
+            TableName: process.env.TABLE_NAME!,
+            Item: item,
+            ConditionExpression:
+              'attribute_not_exists(PK) AND attribute_not_exists(SK)',
           },
-          ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
-          ExpressionAttributeNames: {
-            '#type': 'type'
-          },
-          ExpressionAttributeValues: {
-            ':client_type': 'CLIENT' // ProfileType.Client
-          }
-        }
-      },
-      { // Insert the new contract
-        Put: {
-          TableName: process.env.TABLE_NAME!,
-          Item: item,
-          ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
-        }
-      }
-    ]
-  }).promise();
+        },
+      ],
+    })
+    .promise();
 
   return item;
 }
