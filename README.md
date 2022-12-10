@@ -19,6 +19,12 @@ Notes:
 * We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging.
 * There are useful GraphQL queries on [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md)
 
+## Testing
+
+This project uses both unit tests (*.spec.ts) and integration tests (*.test.ts).
+* Use `npm test` to run the unit test all across the packages
+* Use `npm run it` to run the integration tests all across the packages (you need to execute `npm run deploy` first)
+
 ## Useful commands
 
 * `npm run lint` Check lint issues on the different packages

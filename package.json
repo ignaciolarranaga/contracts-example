@@ -6,6 +6,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test",
+    "it": "lerna run it",
     "lint": "lerna run lint",
     "prettier": "lerna run prettier",
     "format": "lerna run format",
