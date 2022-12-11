@@ -4,6 +4,7 @@ import { Auth, CognitoUser } from '@aws-amplify/auth';
 
 import {
   Contract,
+  ContractConnection,
   CreateContractInput,
   CreateJobInput,
   CreateProfileInput,
@@ -85,6 +86,23 @@ const GET_CONTRACT_QUERY = /* GraphQL */ `
   }
 `;
 
+const LIST_CONTRACTS_QUERY = /* GraphQL */ `
+  query ListContractsForTest {
+    listContracts {
+      items {
+        id
+        contractorId
+        clientId
+        jobIds
+        createdBy
+        createdAt
+        lastModifiedBy
+        lastModifiedAt
+      }
+    }
+  }
+`;
+
 export async function loginWith(username: string, password: string) {
   let user: CognitoUser | any;
   try {
@@ -141,7 +159,7 @@ export async function createContract(
   if (!rawResult.data?.createContract) {
     throw Error(`It was not possible to create the required contract ${input}`);
   } else {
-    return rawResult.data?.createContract;
+    return rawResult.data.createContract;
   }
 }
 
@@ -155,6 +173,19 @@ export async function getContract(id: string): Promise<Contract> {
   if (!rawResult.data?.getContract) {
     throw Error(`It was not possible to retrieve the required contract ${id}`);
   } else {
-    return rawResult.data?.getContract;
+    return rawResult.data.getContract;
+  }
+}
+
+export async function listContracts(): Promise<ContractConnection> {
+  const rawResult = (await API.graphql({
+    query: LIST_CONTRACTS_QUERY,
+    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+  })) as GraphQLResult<Query>;
+
+  if (!rawResult.data?.listContracts) {
+    throw Error('It was not possible to list the required contracts');
+  } else {
+    return rawResult.data.listContracts;
   }
 }
