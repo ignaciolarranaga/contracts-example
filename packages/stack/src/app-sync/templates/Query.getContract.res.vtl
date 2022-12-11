@@ -1,6 +1,6 @@
 #if ($ctx.error)
   $util.error($ctx.error.message, $ctx.error.type)
-#elseif ($ctx.result.createdBy != $ctx.identity.username)
+#elseif ($ctx.identity.username != $ctx.result.clientId && $ctx.identity.username != $ctx.result.contractorId)
   $util.error("You are not allowed to retrieve this contract", "Unauthorized")
 #else
   $util.toJson($ctx.result)

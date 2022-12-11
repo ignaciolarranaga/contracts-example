@@ -1,4 +1,4 @@
-import { ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import { Contract, Job, Profile, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -13,49 +13,66 @@ import {
 
 init();
 
+let sampleContractorProfile: Profile, sampleClientProfile: Profile, sampleJob: Job, sampleContract: Contract;
+beforeAll(async () => {
+  sampleContractorProfile = await createProfile({
+    id: uuid(),
+    password: SAMPLE_VALID_PASSWORD,
+    firstName: 'John',
+    lastName: 'Doe',
+    profession: 'Contractor',
+    type: ProfileType.CONTRACTOR,
+  });
+  sampleClientProfile = await createProfile({
+    id: uuid(),
+    password: SAMPLE_VALID_PASSWORD,
+    firstName: 'Jane',
+    lastName: 'Doe',
+    profession: 'Client',
+    type: ProfileType.CLIENT,
+  });
+  await loginWith(sampleContractorProfile.id, SAMPLE_VALID_PASSWORD);
+  sampleJob = await createJob({
+    description: 'Sample description',
+    price: 8000,
+  });
+  sampleContract = await createContract({
+    clientId: sampleClientProfile.id,
+    jobIds: [sampleJob.id],
+    terms: 'Sample terms',
+  });
+});
+
 describe.only('createContract', () => {
-  it.only('must be possible to obtain a contract of the contractor in the contract', async () => {
-    const contractorProfile = await createProfile({
-      id: uuid(),
-      password: SAMPLE_VALID_PASSWORD,
-      firstName: 'John',
-      lastName: 'Doe',
-      profession: 'Contractor',
-      type: ProfileType.CONTRACTOR,
-    });
-    const clientProfile = await createProfile({
-      id: uuid(),
-      password: SAMPLE_VALID_PASSWORD,
-      firstName: 'Jane',
-      lastName: 'Doe',
-      profession: 'Client',
-      type: ProfileType.CLIENT,
-    });
-    await loginWith(contractorProfile.id, SAMPLE_VALID_PASSWORD);
-    const job = await createJob({
-      description: 'Sample description',
-      price: 8000,
-    });
-    const contract = await createContract({
-      clientId: clientProfile.id,
-      jobIds: [job.id],
-      terms: 'Sample terms',
-    });
+  it('must be possible to obtain a contract of the contractor in the contract', async () => {
+    // Arrange
+    await loginWith(sampleContractorProfile.id, SAMPLE_VALID_PASSWORD);
 
-    const result = await getContract(contract.id);
+    // Act
+    const result = await getContract(sampleContract.id);
 
+    // Assert
     expect(result).toBeDefined();
-    expect(result.id).toBe(contract.id);
-    expect(result.contractorId).toBe(contract.contractorId);
-    expect(result.clientId).toBe(contract.clientId);
-    expect(result.jobIds).toEqual(contract.jobIds);
-    expect(result.createdAt).toBe(contract.createdAt);
-    expect(result.createdBy).toBe(contract.createdBy);
-    expect(result.lastModifiedAt).toBe(contract.lastModifiedAt);
-    expect(result.lastModifiedBy).toBe(contract.lastModifiedBy);
+    expect(result.id).toBe(sampleContract.id);
+    expect(result.contractorId).toBe(sampleContract.contractorId);
+    expect(result.clientId).toBe(sampleContract.clientId);
+    expect(result.jobIds).toEqual(sampleContract.jobIds);
+    expect(result.createdAt).toBe(sampleContract.createdAt);
+    expect(result.createdBy).toBe(sampleContract.createdBy);
+    expect(result.lastModifiedAt).toBe(sampleContract.lastModifiedAt);
+    expect(result.lastModifiedBy).toBe(sampleContract.lastModifiedBy);
   });
 
-  it('must be possible to obtain a contract of the client in the contract', async () => {});
+  it('must be possible to obtain a contract of the client in the contract', async () => {
+    // Arrange
+    await loginWith(sampleClientProfile.id, SAMPLE_VALID_PASSWORD);
+
+    // Act
+    const result = await getContract(sampleContract.id);
+
+    // Assert
+    expect(result).toBeDefined();
+  });
 
   it('must not be possible to return a contract when the contractor is not the one in the contract', async () => {});
 
