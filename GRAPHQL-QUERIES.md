@@ -111,3 +111,23 @@ query GetAContract {
   }
 }
 ```
+
+## List unpaid jobs
+```
+query ListUnpaidJobs {
+  listJobs(filter: {paid: false}) {
+    items {
+      id
+      description
+      clientId
+      paid
+      price
+      paymentDate
+      createdBy
+      createdAt
+      lastModifiedBy
+      lastModifiedAt
+    }
+  }
+}
+```
