@@ -26,6 +26,7 @@ mutation CreateSampleProfiles {
 ```
 
 ## Create Jobs
+**Pre-requisite**: Login with john.
 ```
 mutation CreateSampleJobs {
   job1: createJob(input: {description: "Develop the PoC", price: 8000}) {
@@ -54,13 +55,13 @@ mutation CreateSampleJobs {
     lastModifiedAt
   }
 }
-
 ```
 
 ## Create a contract
+**Pre-requisite**: Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {clientId: "jane", jobIds: ["fe75d4e6-debe-46c2-8e36-26df0a532759", "5dddda8c-30f2-454d-9cc9-3c7079d61876"], terms: "None"}) {
+  createContract(input: {clientId: "jane", jobIds: ["4f887f9e-caa0-431a-afe3-61d3d88beb59", "6e710083-3a9e-4616-809b-dc82ce0e28e6"], terms: "None"}) {
     id
     contractorId
     clientId
