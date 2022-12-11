@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "packages/graphql-resolvers-libraries/nodejs"
   ],
   "useNx": false,
   "version": "0.0.0"
