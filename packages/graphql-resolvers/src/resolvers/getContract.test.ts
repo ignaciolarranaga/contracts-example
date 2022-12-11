@@ -13,7 +13,7 @@ import {
 
 init();
 
-let sampleContractorProfile: Profile, sampleClientProfile: Profile, sampleJob: Job, sampleContract: Contract;
+let sampleContractorProfile: Profile, sampleOtherContractorProfile: Profile, sampleClientProfile: Profile, sampleOtherClientProfile: Profile, sampleJob: Job, sampleContract: Contract;
 beforeAll(async () => {
   sampleContractorProfile = await createProfile({
     id: uuid(),
@@ -23,10 +23,26 @@ beforeAll(async () => {
     profession: 'Contractor',
     type: ProfileType.CONTRACTOR,
   });
+  sampleOtherContractorProfile = await createProfile({
+    id: uuid(),
+    password: SAMPLE_VALID_PASSWORD,
+    firstName: 'Jess',
+    lastName: 'Doe',
+    profession: 'Contractor',
+    type: ProfileType.CONTRACTOR,
+  });
   sampleClientProfile = await createProfile({
     id: uuid(),
     password: SAMPLE_VALID_PASSWORD,
     firstName: 'Jane',
+    lastName: 'Doe',
+    profession: 'Client',
+    type: ProfileType.CLIENT,
+  });
+  sampleOtherClientProfile = await createProfile({
+    id: uuid(),
+    password: SAMPLE_VALID_PASSWORD,
+    firstName: 'Jennifer',
     lastName: 'Doe',
     profession: 'Client',
     type: ProfileType.CLIENT,
@@ -43,7 +59,7 @@ beforeAll(async () => {
   });
 });
 
-describe.only('createContract', () => {
+describe('getContract', () => {
   it('must be possible to obtain a contract of the contractor in the contract', async () => {
     // Arrange
     await loginWith(sampleContractorProfile.id, SAMPLE_VALID_PASSWORD);
@@ -74,7 +90,33 @@ describe.only('createContract', () => {
     expect(result).toBeDefined();
   });
 
-  it('must not be possible to return a contract when the contractor is not the one in the contract', async () => {});
+  it('must not be possible to return a contract when the contractor is not the one in the contract', async () => {
+    // Arrange
+    await loginWith(sampleOtherContractorProfile.id, SAMPLE_VALID_PASSWORD);
 
-  it('must not be possible to return a contract when the client is not the one in the contract', async () => {});
+    try {
+      // Act
+      await getContract(sampleContract.id);
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false);
+    } catch (error: any) {
+      // Assert
+      expect(error.errors[0].message).toBe('You are not allowed to retrieve this contract');
+    }
+  });
+
+  it('must not be possible to return a contract when the client is not the one in the contract', async () => {
+    // Arrange
+    await loginWith(sampleOtherClientProfile.id, SAMPLE_VALID_PASSWORD);
+
+    try {
+      // Act
+      await getContract(sampleContract.id);
+      // Fail test if above expression doesn't throw anything.
+      expect(true).toBe(false);
+    } catch (error: any) {
+      // Assert
+      expect(error.errors[0].message).toBe('You are not allowed to retrieve this contract');
+    }
+  });
 });
