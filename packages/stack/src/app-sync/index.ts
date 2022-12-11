@@ -2,7 +2,9 @@ import { Duration, Expiration } from 'aws-cdk-lib';
 import { IFunction } from 'aws-cdk-lib/aws-lambda';
 import {
   AuthorizationType,
+  DynamoDbDataSource,
   GraphqlApi,
+  LambdaDataSource,
   MappingTemplate,
   Schema,
 } from '@aws-cdk/aws-appsync-alpha';
@@ -62,7 +64,13 @@ export function buildAppSyncApi(
     dynamoDBTable
   );
 
-  // Resolvers
+  prepareDynamoDbResolvers(dynamoDBTableDataSource);
+  prepareLambdaResolvers(resolversDataSource);
+
+  return appSync;
+}
+
+function prepareDynamoDbResolvers(dynamoDBTableDataSource: DynamoDbDataSource) {
   for (const operation of [
     {
       typeName: 'Query',
@@ -86,8 +94,9 @@ export function buildAppSyncApi(
       ),
     });
   }
+}
 
-  // Lambda resolvers
+function prepareLambdaResolvers(resolversDataSource: LambdaDataSource) {
   for (const operation of [
     { typeName: 'Mutation', fieldName: 'createContract' },
     { typeName: 'Mutation', fieldName: 'createProfile' },
@@ -103,6 +112,5 @@ export function buildAppSyncApi(
       ),
     });
   }
-
-  return appSync;
 }
+
