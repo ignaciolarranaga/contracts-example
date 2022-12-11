@@ -82,7 +82,7 @@ export default async function createProfile(
               '#type': 'type',
             },
             ExpressionAttributeValues: {
-              ':contractor_type': ProfileType.CONTRACTOR
+              ':contractor_type': ProfileType.CONTRACTOR,
             },
           },
         },
@@ -100,7 +100,7 @@ export default async function createProfile(
               '#type': 'type',
             },
             ExpressionAttributeValues: {
-              ':client_type': ProfileType.CLIENT
+              ':client_type': ProfileType.CLIENT,
             },
           },
         },
