@@ -13,7 +13,8 @@
     "regenerate-graphql-schema": "lerna run --scope @ignaciolarranaga/stack regenerate-graphql-schema",
     "regenerate-graphql-schema-types": "lerna run --scope @ignaciolarranaga/graphql-model regenerate-graphql-schema-types",
     "synth": "lerna run --scope @ignaciolarranaga/stack synth",
-    "deploy": "lerna run --scope @ignaciolarranaga/stack deploy"
+    "deploy": "lerna run --scope @ignaciolarranaga/stack deploy",
+    "destroy": "lerna run --scope @ignaciolarranaga/stack destroy"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.44.0",
