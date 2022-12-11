@@ -11,11 +11,13 @@ import {
   MutationCreateContractArgs,
   Contract,
   ContractStatus,
-  ProfileType,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
+import {
+  prepareClientProfileExistsAndItIsAClientCheckCondition,
+  prepareContractorProfileExistsAndItIsAContractorCheckCondition,
+} from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -48,8 +50,10 @@ export default async function createProfile(
   await documentClient
     .transactWrite({
       TransactItems: [
-        prepareContractorProfileExistsAndItIsAContractorCheckCondition(item),
-        prepareClientProfileExistsAndItIsAClientCheckCondition(item),
+        prepareContractorProfileExistsAndItIsAContractorCheckCondition(
+          item.contractorId
+        ),
+        prepareClientProfileExistsAndItIsAClientCheckCondition(item.clientId),
         {
           // Insert the new contract
           Put: {
@@ -64,50 +68,6 @@ export default async function createProfile(
     .promise();
 
   return item;
-}
-
-function prepareClientProfileExistsAndItIsAClientCheckCondition(
-  item: Contract & DynamoDBItem
-): DocumentClient.TransactWriteItem {
-  return {
-    ConditionCheck: {
-      TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Profile#${item.clientId}`,
-        SK: `Profile#${item.clientId}`,
-      },
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
-      ExpressionAttributeNames: {
-        '#type': 'type',
-      },
-      ExpressionAttributeValues: {
-        ':client_type': ProfileType.CLIENT,
-      },
-    },
-  };
-}
-
-function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
-  item: Contract & DynamoDBItem
-): DocumentClient.TransactWriteItem {
-  return {
-    ConditionCheck: {
-      TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Profile#${item.contractorId}`,
-        SK: `Profile#${item.contractorId}`,
-      },
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
-      ExpressionAttributeNames: {
-        '#type': 'type',
-      },
-      ExpressionAttributeValues: {
-        ':contractor_type': ProfileType.CONTRACTOR,
-      },
-    },
-  };
 }
 
 function prepareItem(

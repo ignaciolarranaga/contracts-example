@@ -7,13 +7,9 @@ import {
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
-import {
-  MutationCreateJobArgs,
-  Job,
-  ProfileType,
-} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import { MutationCreateJobArgs, Job } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { prepareContractorProfileExistsAndItIsAContractorCheckCondition } from 'utils/conditional-checks';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -34,14 +30,14 @@ export default async function createJob(
   const currentTime = new Date();
   const item = prepareItem(id, currentUser, event, currentTime);
 
-  console.log(
-    `Creating a job of ${currentUser}: ${item.description}`
-  );
+  console.log(`Creating a job of ${currentUser}: ${item.description}`);
 
   await documentClient
     .transactWrite({
       TransactItems: [
-        prepareContractorProfileExistsAndItIsAContractorCheckCondition(item),
+        prepareContractorProfileExistsAndItIsAContractorCheckCondition(
+          item.contractorId
+        ),
         {
           // Insert the new job
           Put: {
@@ -56,28 +52,6 @@ export default async function createJob(
     .promise();
 
   return item;
-}
-
-function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
-  item: Job & DynamoDBItem
-): DocumentClient.TransactWriteItem {
-  return {
-    ConditionCheck: {
-      TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Profile#${item.contractorId}`,
-        SK: `Profile#${item.contractorId}`,
-      },
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
-      ExpressionAttributeNames: {
-        '#type': 'type',
-      },
-      ExpressionAttributeValues: {
-        ':contractor_type': ProfileType.CONTRACTOR,
-      },
-    },
-  };
 }
 
 function prepareItem(
