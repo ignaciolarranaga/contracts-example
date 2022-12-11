@@ -15,6 +15,7 @@ import {
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
 import errorCodes from 'error-codes';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -33,7 +34,89 @@ export default async function createProfile(
   const id = uuid();
   const currentUser = (event.identity as AppSyncIdentityCognito).username!;
   const currentTime = new Date();
-  const item: Contract & DynamoDBItem = {
+  const item = prepareItem(id, currentUser, event, currentTime);
+
+  if (item.contractorId === item.clientId) {
+    callback(errorCodes.CAN_NOT_SELF_CONTRACT);
+    return;
+  }
+
+  console.log(
+    `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
+  );
+
+  await documentClient
+    .transactWrite({
+      TransactItems: [
+        prepareContractorProfileExistsAndItIsAContractorCheckCondition(item),
+        prepareClientProfileExistsAndItIsAClientCheckCondition(item),
+        {
+          // Insert the new contract
+          Put: {
+            TableName: process.env.TABLE_NAME!,
+            Item: item,
+            ConditionExpression:
+              'attribute_not_exists(PK) AND attribute_not_exists(SK)',
+          },
+        },
+      ],
+    })
+    .promise();
+
+  return item;
+}
+
+function prepareClientProfileExistsAndItIsAClientCheckCondition(
+  item: Contract & DynamoDBItem
+): DocumentClient.TransactWriteItem {
+  return {
+    ConditionCheck: {
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Profile#${item.clientId}`,
+        SK: `Profile#${item.clientId}`,
+      },
+      ConditionExpression:
+        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
+      ExpressionAttributeNames: {
+        '#type': 'type',
+      },
+      ExpressionAttributeValues: {
+        ':client_type': ProfileType.CLIENT,
+      },
+    },
+  };
+}
+
+function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
+  item: Contract & DynamoDBItem
+): DocumentClient.TransactWriteItem {
+  return {
+    ConditionCheck: {
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Profile#${item.contractorId}`,
+        SK: `Profile#${item.contractorId}`,
+      },
+      ConditionExpression:
+        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
+      ExpressionAttributeNames: {
+        '#type': 'type',
+      },
+      ExpressionAttributeValues: {
+        ':contractor_type': ProfileType.CONTRACTOR,
+      },
+    },
+  };
+}
+
+function prepareItem(
+  id: string,
+  currentUser: string,
+  event: AppSyncResolverEvent<MutationCreateContractArgs>,
+  currentTime: Date
+): Contract & DynamoDBItem {
+  return {
     PK: `Contract#${id}`,
     SK: `Contract#${id}`,
     __typename: 'Contract',
@@ -55,67 +138,4 @@ export default async function createProfile(
     lastModifiedAt: currentTime.toISOString(),
     lastModifiedBy: currentUser,
   };
-
-  if (item.contractorId === item.clientId) {
-    callback(errorCodes.CAN_NOT_SELF_CONTRACT);
-    return;
-  }
-
-  console.log(
-    `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
-  );
-
-  await documentClient
-    .transactWrite({
-      TransactItems: [
-        {
-          // Contractor profile exits and it is a contractor
-          ConditionCheck: {
-            TableName: process.env.TABLE_NAME!,
-            Key: {
-              PK: `Profile#${item.contractorId}`,
-              SK: `Profile#${item.contractorId}`,
-            },
-            ConditionExpression:
-              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :contractor_type',
-            ExpressionAttributeNames: {
-              '#type': 'type',
-            },
-            ExpressionAttributeValues: {
-              ':contractor_type': ProfileType.CONTRACTOR,
-            },
-          },
-        },
-        {
-          // Client profile exits and it is a contractor
-          ConditionCheck: {
-            TableName: process.env.TABLE_NAME!,
-            Key: {
-              PK: `Profile#${item.clientId}`,
-              SK: `Profile#${item.clientId}`,
-            },
-            ConditionExpression:
-              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
-            ExpressionAttributeNames: {
-              '#type': 'type',
-            },
-            ExpressionAttributeValues: {
-              ':client_type': ProfileType.CLIENT,
-            },
-          },
-        },
-        {
-          // Insert the new contract
-          Put: {
-            TableName: process.env.TABLE_NAME!,
-            Item: item,
-            ConditionExpression:
-              'attribute_not_exists(PK) AND attribute_not_exists(SK)',
-          },
-        },
-      ],
-    })
-    .promise();
-
-  return item;
 }

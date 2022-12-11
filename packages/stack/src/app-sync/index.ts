@@ -113,4 +113,3 @@ function prepareLambdaResolvers(resolversDataSource: LambdaDataSource) {
     });
   }
 }
-
