@@ -59,6 +59,8 @@ export class ExampleStack extends Stack {
     });
     new CfnOutput(this, 'AwsAppsyncRegion', { value: this.region });
     new CfnOutput(this, 'AwsAppsyncAuthenticationType', { value: 'API_KEY' });
-    new CfnOutput(this, 'AwsAppsyncApiKey', { value: appSyncApi.apiKey! });
+    if (appSyncApi.apiKey) {
+      new CfnOutput(this, 'AwsAppsyncApiKey', { value: appSyncApi.apiKey });
+    }
   }
 }
