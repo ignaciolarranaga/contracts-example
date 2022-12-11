@@ -62,25 +62,25 @@ beforeAll(async () => {
   });
 
   // Contractor/Client 1
-  await loginWith(sampleContractorProfile1.id, SAMPLE_VALID_PASSWORD);
+  await loginWith(sampleClientProfile1.id, SAMPLE_VALID_PASSWORD);
   sampleJob1 = await createJob({
     description: 'Sample job 1',
     price: 8000,
   });
   sampleContract1 = await createContract({
-    clientId: sampleClientProfile1.id,
+    contractorId: sampleContractorProfile1.id,
     jobIds: [sampleJob1.id],
     terms: 'Sample terms',
   });
 
   // Contractor/Client 2
-  await loginWith(sampleContractorProfile2.id, SAMPLE_VALID_PASSWORD);
+  await loginWith(sampleClientProfile2.id, SAMPLE_VALID_PASSWORD);
   sampleJob2 = await createJob({
     description: 'Sample job 2',
     price: 8000,
   });
   sampleContract2 = await createContract({
-    clientId: sampleClientProfile2.id,
+    contractorId: sampleContractorProfile2.id,
     jobIds: [sampleJob2.id],
     terms: 'Sample terms',
   });

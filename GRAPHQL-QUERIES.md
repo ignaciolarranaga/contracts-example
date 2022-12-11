@@ -5,7 +5,7 @@ The following is a list of sample graphql queries that you can use
 ## Create Sample Profiles
 ```
 mutation CreateSampleProfiles {
-  contractor: createProfile(input: {firstName: "John", lastName: "Doe", profession: "Project Manager", type: CONTRACTOR, id: "john", password: "-TestUser1"}) {
+  contractor: createProfile(input: {firstName: "John", lastName: "Doe", profession: "Project Manager", type: CLIENT, id: "john", password: "-TestUser1"}) {
     id
     firstName
     lastName
@@ -14,7 +14,7 @@ mutation CreateSampleProfiles {
     balance
   }
 
-  client: createProfile(input: {firstName: "Jane", lastName: "Doe", profession: "Engineer", type: CLIENT, id: "jane", password: "-TestUser1"}) {
+  client: createProfile(input: {firstName: "Jane", lastName: "Doe", profession: "Engineer", type: CONTRACTOR, id: "jane", password: "-TestUser1"}) {
     id
     firstName
     lastName
@@ -32,7 +32,7 @@ mutation CreateSampleJobs {
   job1: createJob(input: {description: "Develop the PoC", price: 8000}) {
     id
     description
-    contractorId
+    clientId
     paid
     price
     paymentDate
@@ -45,7 +45,7 @@ mutation CreateSampleJobs {
   job2: createJob(input: {description: "Add Integration Tests", price: 2000}) {
     id
     description
-    contractorId
+    clientId
     paid
     price
     paymentDate
@@ -61,10 +61,10 @@ mutation CreateSampleJobs {
 **Pre-requisite**: Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {clientId: "jane", jobIds: ["a655bad9-a086-472e-aa97-082597d2ce12", "56912cae-e0a3-40bd-af14-129344ca6e3b"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["ea8a3ea6-8ed8-469b-8b25-e6742abd864c", "cde1ce02-ee59-43ed-8739-410caaf48c5f"], terms: "None"}) {
     id
-    contractorId
     clientId
+    contractorId
     jobIds
     terms
     status
@@ -100,7 +100,7 @@ query ListContracts {
 **Pre-requisite**: Adjust the id below to match the one you just created.
 ```
 query GetAContract {
-  getContract(id: "94165fa0-9e93-4968-b141-c14fa926499b") {
+  getContract(id: "6447ba79-9616-44ee-aa86-294372f20517") {
     createdBy
     createdAt
     id

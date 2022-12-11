@@ -1,6 +1,7 @@
 type Job implements Audited @aws_cognito_user_pools {
   id: ID!
-  contractorId: ID!
+  clientId: ID! # Client requesting the job
+  contractorId: ID # Once assigned the contractorId will be filled
   description: String!
   price: Float!
   paid: Boolean!
@@ -49,7 +50,7 @@ type BestClientsOutputConnection {
 ## Queries
 
 extend type Query {
-  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection
+  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
 
   bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
 }

@@ -146,7 +146,7 @@ enum ContractStatus {
 
 """A contract is created by a contractor with a client"""
 input CreateContractInput {
-  clientId: ID!
+  contractorId: ID!
   jobIds: [ID!]!
   terms: String!
 }
@@ -168,7 +168,8 @@ input CreateProfileInput {
 
 type Job implements Audited @aws_cognito_user_pools {
   id: ID!
-  contractorId: ID!
+  clientId: ID!
+  contractorId: ID
   description: String!
   price: Float!
   paid: Boolean!
@@ -223,7 +224,7 @@ type Query {
   bestProfession(input: BestProfessionInput): String
   getContract(id: ID!): Contract @aws_cognito_user_pools
   listContracts(limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
-  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection
+  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
   bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
   getProfile(id: ID): Profile
 }

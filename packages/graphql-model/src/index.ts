@@ -144,7 +144,7 @@ export enum ContractStatus {
 
 /** A contract is created by a contractor with a client */
 export type CreateContractInput = {
-  clientId: Scalars['ID'];
+  contractorId: Scalars['ID'];
   jobIds: Array<Scalars['ID']>;
   terms: Scalars['String'];
 };
@@ -166,7 +166,8 @@ export type CreateProfileInput = {
 
 export type Job = Audited & {
   __typename?: 'Job';
-  contractorId: Scalars['ID'];
+  clientId: Scalars['ID'];
+  contractorId?: Maybe<Scalars['ID']>;
   createdAt: Scalars['AWSDateTime'];
   createdBy: Scalars['String'];
   description: Scalars['String'];

@@ -57,13 +57,14 @@ beforeAll(async () => {
     profession: 'Client',
     type: ProfileType.CLIENT,
   });
-  await loginWith(sampleContractorProfile.id, SAMPLE_VALID_PASSWORD);
+  // The jobs and contracts can only be created by clients
+  await loginWith(sampleClientProfile.id, SAMPLE_VALID_PASSWORD);
   sampleJob = await createJob({
     description: 'Sample description',
     price: 8000,
   });
   sampleContract = await createContract({
-    clientId: sampleClientProfile.id,
+    contractorId: sampleContractorProfile.id,
     jobIds: [sampleJob.id],
     terms: 'Sample terms',
   });
@@ -80,8 +81,8 @@ describe('getContract', () => {
     // Assert
     expect(result).toBeDefined();
     expect(result.id).toBe(sampleContract.id);
-    expect(result.contractorId).toBe(sampleContract.contractorId);
     expect(result.clientId).toBe(sampleContract.clientId);
+    expect(result.contractorId).toBe(sampleContract.contractorId);
     expect(result.jobIds).toEqual(sampleContract.jobIds);
     expect(result.createdAt).toBe(sampleContract.createdAt);
     expect(result.createdBy).toBe(sampleContract.createdBy);

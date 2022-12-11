@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 
 import { MutationCreateJobArgs, Job } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
-import { prepareContractorProfileExistsAndItIsAContractorCheckCondition } from 'utils/conditional-checks';
+import { prepareClientProfileExistsAndItIsAClientCheckCondition, prepareContractorProfileExistsAndItIsAContractorCheckCondition } from 'utils/conditional-checks';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -35,8 +35,8 @@ export default async function createJob(
   await documentClient
     .transactWrite({
       TransactItems: [
-        prepareContractorProfileExistsAndItIsAContractorCheckCondition(
-          item.contractorId
+        prepareClientProfileExistsAndItIsAClientCheckCondition(
+          item.clientId
         ),
         {
           // Insert the new job
@@ -66,7 +66,7 @@ function prepareItem(
     __typename: 'Job',
 
     id,
-    contractorId: currentUser,
+    clientId: currentUser,
     description: event.arguments.input.description,
     price: event.arguments.input.price,
     paid: false,

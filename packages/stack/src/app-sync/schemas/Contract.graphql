@@ -22,7 +22,7 @@ type Contract implements Audited @aws_cognito_user_pools {
 
 # A contract is created by a contractor with a client
 input CreateContractInput {
-  clientId: ID!
+  contractorId: ID!
   jobIds: [ID!]!
   terms: String!
 }
