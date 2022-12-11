@@ -4,14 +4,18 @@
 
 You have 2 ways to start developing:
 
-Using [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#git@github.com:ignaciolarranaga/contracts-example.git) (recommended)
+1. Using [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#git@github.com:ignaciolarranaga/contracts-example.git), or doing a local setup manually as described in the how-tos.
 
-Or doing a local setup manually:
+2. Once you are there you will need to define an AWS account to deploy your stack, i.e.:
+```
+export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+export AWS_DEFAULT_REGION=us-west-2
+```
 
-1. Install the software dependencies as detailed in .gitpodDockerfile (e.g. aws-cdk, aws-sam-cli, etc.)
-2. Use `npm install` to download the lerna dependencies used in the following steps
-3. Use `npm run bootstrap` to bootstrap the project (i.e. install all the dependencies)
-4. Use `npm run build` to build it
+3. If it is the first time you use AWS CDK you will need to [bootstrap it](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap) (i.e. `cdk bootstrap aws://ACCOUNT-NUMBER/REGION`).
+
+4. Now you have to deploy the stack: `npm run deploy`
 
 Notes:
 * This project uses [Lerna](https://lerna.js.org/) for the building of the monorepo.
@@ -70,6 +74,13 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
   * Please note that: IN_PROGRESS < NEW < TERMINATED if ordered alphabetically
 
 ## HOW-TOs
+
+### How-to manual deploy
+
+1. Install the software dependencies as detailed in [.gitpodDockerfile](.gitpodDockerfile) (e.g. aws-cdk, aws-sam-cli, etc.)
+2. Use `npm install` to download the lerna dependencies used in the following steps
+3. Use `npm run bootstrap` to bootstrap the project (i.e. install all the dependencies)
+4. Use `npm run build` to build it
 
 ### Execute Lambdas Locally
 To execute a lambda locally you can run: `sam local invoke LAMBDA_ID -e SAMPLE_EVENT -t stack.yml`.
