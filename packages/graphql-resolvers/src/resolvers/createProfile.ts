@@ -56,6 +56,8 @@ export default async function createProfile(
     type: event.arguments.input.type,
     balance: 0,
 
+    amountDue: 0,
+
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,
     lastModifiedAt: currentTime.toISOString(),

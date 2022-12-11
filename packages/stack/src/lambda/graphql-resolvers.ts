@@ -41,7 +41,6 @@ export function buildGraphQLResolversLambda(
       USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
     },
     tracing: Tracing.ACTIVE,
-    timeout: Duration.seconds(15), // Incrementing timeout due mongo connection
   });
 
   // Add Permissions to Modify Users
@@ -54,7 +53,7 @@ export function buildGraphQLResolversLambda(
   // Add Permissions Over the DynamoDB Table
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: ['dynamodb:ConditionCheckItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'],
+      actions: ['dynamodb:ConditionCheckItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem', 'dynamodb:BatchGetItem'],
       resources: [dynamoDBTable.tableArn],
     })
   );

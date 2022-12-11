@@ -11,10 +11,10 @@ import {
   MutationCreateContractArgs,
   Contract,
   ContractStatus,
+  ProfileType,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
 import {
-  prepareClientProfileExistsAndItIsAClientCheckCondition,
   prepareContractorProfileExistsAndItIsAContractorCheckCondition,
 } from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
@@ -49,13 +49,33 @@ export default async function createProfile(
     } on jobs: ${JSON.stringify(item.jobIds)}`
   );
 
+  const amountDue = await calculateAmountDue(item.jobIds);
+
   await documentClient
     .transactWrite({
       TransactItems: [
         prepareContractorProfileExistsAndItIsAContractorCheckCondition(
           item.contractorId
         ),
-        prepareClientProfileExistsAndItIsAClientCheckCondition(item.clientId),
+        {
+          Update: { // Update the client amount due
+            TableName: process.env.TABLE_NAME!,
+            Key: {
+              PK: `Profile#${item.clientId}`,
+              SK: `Profile#${item.clientId}`,
+            },
+            UpdateExpression: 'SET amountDue = amountDue + :amountDue',
+            ConditionExpression: // The profile exists and it is a client
+              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :clientType',
+            ExpressionAttributeNames: {
+              '#type': 'type',
+            },
+            ExpressionAttributeValues: {
+              ':clientType': ProfileType.CLIENT,
+              ':amountDue': amountDue
+            },
+          }
+        },
         ...event.arguments.input.jobIds.map(jobId => {
           return {
             // Update the jobs so we know they are assigned
@@ -65,16 +85,16 @@ export default async function createProfile(
                 PK: `Job#${jobId}`,
                 SK: `Job#${jobId}`,
               },
-              UpdateExpression: 'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractor_id',
+              UpdateExpression: 'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractorId',
               ConditionExpression: // Job exists and belongs to the contractor
-                'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :client_id',
+                'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :clientId',
               ExpressionAttributeValues: {
                 ':pk1': `Contractor#${item.contractorId}`,
                 ':sk1': 'Paid#false',
                 ':pk2': `Client#${item.clientId}`,
                 ':sk2': 'Paid#false',
-                ':client_id': item.clientId,
-                ':contractor_id': item.contractorId,
+                ':clientId': item.clientId,
+                ':contractorId': item.contractorId,
               },
             },
           };
@@ -93,6 +113,26 @@ export default async function createProfile(
     .promise();
 
   return item;
+}
+
+async function calculateAmountDue(jobIds: string[]): Promise<Number> {
+  const result = await documentClient.batchGet({
+    RequestItems: {
+      [process.env.TABLE_NAME!]: {
+        Keys: jobIds.map(jobId => { return { PK: `Job#${jobId}`, SK: `Job#${jobId}` } }),
+        ProjectionExpression: 'price'
+      }
+    }
+  }).promise();
+
+  let amountDue = 0;
+  if (result.Responses && result.Responses[process.env.TABLE_NAME!].length > 0) {
+    for (const item of result.Responses[process.env.TABLE_NAME!]) {
+      amountDue += item.price
+    }
+  }
+
+  return amountDue;
 }
 
 function prepareItem(

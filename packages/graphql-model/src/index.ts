@@ -229,6 +229,7 @@ export type MutationPayJobArgs = {
 
 export type Profile = Audited & {
   __typename?: 'Profile';
+  amountDue: Scalars['Float'];
   balance: Scalars['Float'];
   createdAt: Scalars['AWSDateTime'];
   createdBy?: Maybe<Scalars['String']>;

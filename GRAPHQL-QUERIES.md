@@ -12,6 +12,7 @@ mutation CreateSampleProfiles {
     profession
     type
     balance
+    amountDue
   }
 
   client: createProfile(input: {firstName: "Jane", lastName: "Doe", profession: "Engineer", type: CONTRACTOR, id: "jane", password: "-TestUser1"}) {
@@ -21,6 +22,7 @@ mutation CreateSampleProfiles {
     profession
     type
     balance
+    amountDue
   }
 }
 ```
@@ -63,7 +65,7 @@ mutation CreateSampleJobs {
 * Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {contractorId: "jane", jobIds: ["ea8a3ea6-8ed8-469b-8b25-e6742abd864c", "cde1ce02-ee59-43ed-8739-410caaf48c5f"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["b1a44ac9-1649-4636-a055-05396925453e", "6bb073d1-18da-4c24-bc58-59be9d29da35"], terms: "None"}) {
     id
     clientId
     contractorId
