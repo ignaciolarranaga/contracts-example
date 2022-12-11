@@ -45,7 +45,9 @@ export default async function createProfile(
   }
 
   console.log(
-    `Creating contract between ${item.contractorId} and ${item.clientId} on jobs: ${JSON.stringify(item.jobIds)}`
+    `Creating contract between ${item.contractorId} and ${
+      item.clientId
+    } on jobs: ${JSON.stringify(item.jobIds)}`
   );
 
   await documentClient
@@ -55,7 +57,12 @@ export default async function createProfile(
           item.contractorId
         ),
         prepareClientProfileExistsAndItIsAClientCheckCondition(item.clientId),
-        ... event.arguments.input.jobIds.map(jobId => prepareJobExistsAndBelongsToContractorCheckCondition(jobId, item.contractorId)),
+        ...event.arguments.input.jobIds.map(jobId =>
+          prepareJobExistsAndBelongsToContractorCheckCondition(
+            jobId,
+            item.contractorId
+          )
+        ),
         {
           // Insert the new contract
           Put: {
