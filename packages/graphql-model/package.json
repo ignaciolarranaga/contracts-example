@@ -12,10 +12,12 @@
   "keywords": [
     "graphql"
   ],
+  "files": [
+    "package.json",
+    "dist/index.js",
+    "dist/index.d.ts"
+  ],
   "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
-  "dependencies": {
-    "graphql": "^16.6.0"
-  },
   "devDependencies": {
     "@graphql-codegen/cli": "2.14.1",
     "@graphql-codegen/typescript": "2.8.2",
