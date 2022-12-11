@@ -43,12 +43,12 @@ export default async function createProfile(
     clientId: event.arguments.input.clientId,
     jobId: event.arguments.input.jobId,
     terms: event.arguments.input.terms,
-    status: 'NEW' as ContractStatus, //ContractStatus.New,
+    status: ContractStatus.NEW,
 
     PK1: `Contractor#${currentUser}`,
-    SK1: 'NEW',
+    SK1: ContractStatus.NEW,
     PK2: `Client#${event.arguments.input.clientId}`,
-    SK2: 'NEW',
+    SK2: ContractStatus.NEW,
 
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,
@@ -82,7 +82,7 @@ export default async function createProfile(
               '#type': 'type',
             },
             ExpressionAttributeValues: {
-              ':contractor_type': 'CONTRACTOR', // ProfileType.Contractor
+              ':contractor_type': ProfileType.CONTRACTOR
             },
           },
         },
@@ -100,7 +100,7 @@ export default async function createProfile(
               '#type': 'type',
             },
             ExpressionAttributeValues: {
-              ':client_type': 'CLIENT', // ProfileType.Client
+              ':client_type': ProfileType.CLIENT
             },
           },
         },
