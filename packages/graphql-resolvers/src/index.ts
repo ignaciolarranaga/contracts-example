@@ -4,6 +4,7 @@ import errorCodes from 'error-codes';
 import createContract from 'resolvers/createContract';
 import createJob from 'resolvers/createJob';
 import createProfile from 'resolvers/createProfile';
+import makeProfileDeposit from 'resolvers/makeProfileDeposit';
 
 const resolvers: {
   [type: string]: {
@@ -18,6 +19,7 @@ const resolvers: {
     createContract,
     createJob,
     createProfile,
+    makeProfileDeposit,
   },
 };
 

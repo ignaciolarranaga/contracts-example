@@ -58,7 +58,9 @@ mutation CreateSampleJobs {
 ```
 
 ## Create a contract
-**Pre-requisite**: Adjust the jobIds below to match the ones you just created.
+**Pre-requisites**:
+* Login with john.
+* Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
   createContract(input: {contractorId: "jane", jobIds: ["ea8a3ea6-8ed8-469b-8b25-e6742abd864c", "cde1ce02-ee59-43ed-8739-410caaf48c5f"], terms: "None"}) {
@@ -77,6 +79,7 @@ mutation CreateAContract {
 ```
 
 ## List contracts
+**Pre-requisite**: Login with john or jane.
 ```
 query ListContracts {
   listContracts {
@@ -97,7 +100,9 @@ query ListContracts {
 ```
 
 ## Get a contract
-**Pre-requisite**: Adjust the id below to match the one you just created.
+**Pre-requisites**:
+* Login with john.
+* Adjust the id below to match the one you just created.
 ```
 query GetAContract {
   getContract(id: "6447ba79-9616-44ee-aa86-294372f20517") {
@@ -113,6 +118,7 @@ query GetAContract {
 ```
 
 ## List unpaid jobs
+**Pre-requisite**: Login with john or jane.
 ```
 query ListUnpaidJobs {
   listJobs(filter: {paid: false}) {
@@ -128,6 +134,21 @@ query ListUnpaidJobs {
       lastModifiedBy
       lastModifiedAt
     }
+  }
+}
+```
+
+## Make a deposit
+**Pre-requisite**: Login with john.
+```
+mutation MakeADeposit {
+  makeProfileDeposit(input: {amount: 100}) {
+    id
+    firstName
+    lastName
+    profession
+    type
+    balance
   }
 }
 ```

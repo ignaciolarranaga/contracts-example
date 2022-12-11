@@ -28,7 +28,6 @@ input CreateProfileInput {
 }
 
 input MakeProfileDepositInput {
-  id: ID!
   amount: Float!
 }
 

@@ -190,7 +190,6 @@ input ListJobsFilterInput {
 }
 
 input MakeProfileDepositInput {
-  id: ID!
   amount: Float!
 }
 

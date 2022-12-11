@@ -191,7 +191,6 @@ export type ListJobsFilterInput = {
 
 export type MakeProfileDepositInput = {
   amount: Scalars['Float'];
-  id: Scalars['ID'];
 };
 
 export type Mutation = {
