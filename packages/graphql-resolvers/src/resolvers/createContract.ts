@@ -16,6 +16,7 @@ import { DynamoDBItem } from 'utils/DynamoDBItem';
 import {
   prepareClientProfileExistsAndItIsAClientCheckCondition,
   prepareContractorProfileExistsAndItIsAContractorCheckCondition,
+  prepareJobExistsAndBelongsToContractorCheckCondition,
 } from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
 
@@ -44,7 +45,7 @@ export default async function createProfile(
   }
 
   console.log(
-    `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
+    `Creating contract between ${item.contractorId} and ${item.clientId} on jobs: ${JSON.stringify(item.jobIds)}`
   );
 
   await documentClient
@@ -54,6 +55,7 @@ export default async function createProfile(
           item.contractorId
         ),
         prepareClientProfileExistsAndItIsAClientCheckCondition(item.clientId),
+        ... event.arguments.input.jobIds.map(jobId => prepareJobExistsAndBelongsToContractorCheckCondition(jobId, item.contractorId)),
         {
           // Insert the new contract
           Put: {
@@ -84,7 +86,7 @@ function prepareItem(
     id,
     contractorId: currentUser,
     clientId: event.arguments.input.clientId,
-    jobId: event.arguments.input.jobId,
+    jobIds: event.arguments.input.jobIds,
     terms: event.arguments.input.terms,
     status: ContractStatus.NEW,
 

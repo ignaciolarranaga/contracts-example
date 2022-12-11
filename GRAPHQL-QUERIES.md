@@ -2,9 +2,9 @@
 
 The following is a list of sample graphql queries that you can use
 
-## Create a Profile
+## Create Sample Profiles
 ```
-mutation CreateProfiles {
+mutation CreateSampleProfiles {
   contractor: createProfile(input: {firstName: "John", lastName: "Doe", profession: "Project Manager", type: CONTRACTOR, id: "john", password: "-TestUser1"}) {
     id
     firstName
@@ -25,9 +25,9 @@ mutation CreateProfiles {
 }
 ```
 
-## Create a Job
+## Create Jobs
 ```
-mutation CreateAJob {
+mutation CreateSampleJobs {
   job1: createJob(input: {description: "Develop the PoC", price: 8000}) {
     id
     description
@@ -35,10 +35,10 @@ mutation CreateAJob {
     paid
     price
     paymentDate
-    lastModifiedBy
-    lastModifiedAt
     createdBy
     createdAt
+    lastModifiedBy
+    lastModifiedAt
   }
 
   job2: createJob(input: {description: "Add Integration Tests", price: 2000}) {
@@ -48,10 +48,10 @@ mutation CreateAJob {
     paid
     price
     paymentDate
-    lastModifiedBy
-    lastModifiedAt
     createdBy
     createdAt
+    lastModifiedBy
+    lastModifiedAt
   }
 }
 
@@ -60,8 +60,15 @@ mutation CreateAJob {
 ## Create a contract
 ```
 mutation CreateAContract {
-  createContract(input: {clientId: "jane", jobId: "1", terms: "None"}) {
+  createContract(input: {clientId: "jane", jobIds: ["fe75d4e6-debe-46c2-8e36-26df0a532759", "5dddda8c-30f2-454d-9cc9-3c7079d61876"], terms: "None"}) {
     id
+    contractorId
+    clientId
+    jobIds
+    createdBy
+    createdAt
+    lastModifiedBy
+    lastModifiedAt
   }
 }
 ```

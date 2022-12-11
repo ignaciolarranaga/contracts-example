@@ -123,7 +123,7 @@ export type Contract = Audited & {
   createdAt: Scalars['AWSDateTime'];
   createdBy: Scalars['String'];
   id: Scalars['ID'];
-  jobId: Scalars['ID'];
+  jobIds: Array<Scalars['ID']>;
   lastModifiedAt: Scalars['AWSDateTime'];
   lastModifiedBy: Scalars['String'];
   status: ContractStatus;
@@ -145,7 +145,7 @@ export enum ContractStatus {
 /** A contract is created by a contractor with a client */
 export type CreateContractInput = {
   clientId: Scalars['ID'];
-  jobId: Scalars['ID'];
+  jobIds: Array<Scalars['ID']>;
   terms: Scalars['String'];
 };
 

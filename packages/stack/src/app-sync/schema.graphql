@@ -124,7 +124,7 @@ type Contract implements Audited @aws_cognito_user_pools {
   id: ID!
   contractorId: ID!
   clientId: ID!
-  jobId: ID!
+  jobIds: [ID!]!
   terms: String!
   status: ContractStatus!
   createdAt: AWSDateTime!
@@ -147,7 +147,7 @@ enum ContractStatus {
 """A contract is created by a contractor with a client"""
 input CreateContractInput {
   clientId: ID!
-  jobId: ID!
+  jobIds: [ID!]!
   terms: String!
 }
 
