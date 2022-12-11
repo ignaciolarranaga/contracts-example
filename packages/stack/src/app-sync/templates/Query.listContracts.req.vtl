@@ -18,8 +18,8 @@
 #else
       ":pk" : $util.dynamodb.toDynamoDBJson("Client#$ctx.identity.username"),
 #end
-      ":min" : $util.dynamodb.toDynamoDBJson('IN_PROGRESS'),
-      ":max" : $util.dynamodb.toDynamoDBJson('NEW')
+      ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
+      ":max" : $util.dynamodb.toDynamoDBJson('Status#NEW')
     }
   },
 #if ( !$util.isNullOrEmpty($ctx.args.nextToken) )

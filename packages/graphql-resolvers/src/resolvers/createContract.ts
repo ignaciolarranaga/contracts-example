@@ -98,9 +98,9 @@ function prepareItem(
     status: ContractStatus.NEW,
 
     PK1: `Contractor#${currentUser}`,
-    SK1: ContractStatus.NEW,
+    SK1: `Status#${ContractStatus.NEW}`,
     PK2: `Client#${event.arguments.input.clientId}`,
-    SK2: ContractStatus.NEW,
+    SK2: `Status#${ContractStatus.NEW}`,
 
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,
