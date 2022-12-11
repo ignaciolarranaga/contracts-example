@@ -63,6 +63,7 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 | Entity            | PK                 | SK                 | PK1                   | SK1            | PK2                   | SK2            |
 |-------------------|--------------------|--------------------|-----------------------|----------------|-----------------------|----------------|
 | Profile           | Profile#[USERNAME] | Profile#[USERNAME] |                       |                |                       |                |
+| Job               | Job#[ID]           | Job#[ID]           |                       |                |                       |                |
 | Contract          | Contract#[ID]      | Contract#[ID]      | Contractor#[USERNAME] | [STATUS]       | Client#[USERNAME]     | [STATUS]       |
 
 ### Access Patterns

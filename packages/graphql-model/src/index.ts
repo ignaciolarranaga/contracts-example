@@ -149,6 +149,11 @@ export type CreateContractInput = {
   terms: Scalars['String'];
 };
 
+export type CreateJobInput = {
+  description: Scalars['String'];
+  price: Scalars['Float'];
+};
+
 /** # Inputs */
 export type CreateProfileInput = {
   firstName: Scalars['String'];
@@ -159,17 +164,18 @@ export type CreateProfileInput = {
   type: ProfileType;
 };
 
-export type Job = {
+export type Job = Audited & {
   __typename?: 'Job';
+  contractorId: Scalars['ID'];
   createdAt: Scalars['AWSDateTime'];
-  createdBy?: Maybe<Scalars['String']>;
+  createdBy: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['ID'];
+  lastModifiedAt: Scalars['AWSDateTime'];
+  lastModifiedBy: Scalars['String'];
   paid: Scalars['Boolean'];
   paymentDate?: Maybe<Scalars['AWSDateTime']>;
   price: Scalars['Float'];
-  updatedAt: Scalars['AWSDateTime'];
-  updatedBy?: Maybe<Scalars['String']>;
 };
 
 export type JobConnection = {
@@ -190,6 +196,7 @@ export type MakeProfileDepositInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createContract?: Maybe<Contract>;
+  createJob?: Maybe<Job>;
   createProfile?: Maybe<Profile>;
   makeProfileDeposit?: Maybe<Profile>;
   payJob?: Maybe<Job>;
@@ -198,6 +205,11 @@ export type Mutation = {
 
 export type MutationCreateContractArgs = {
   input: CreateContractInput;
+};
+
+
+export type MutationCreateJobArgs = {
+  input: CreateJobInput;
 };
 
 

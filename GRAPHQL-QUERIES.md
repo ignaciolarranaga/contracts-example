@@ -25,6 +25,38 @@ mutation CreateProfiles {
 }
 ```
 
+## Create a Job
+```
+mutation CreateAJob {
+  job1: createJob(input: {description: "Develop the PoC", price: 8000}) {
+    id
+    description
+    contractorId
+    paid
+    price
+    paymentDate
+    lastModifiedBy
+    lastModifiedAt
+    createdBy
+    createdAt
+  }
+
+  job2: createJob(input: {description: "Add Integration Tests", price: 2000}) {
+    id
+    description
+    contractorId
+    paid
+    price
+    paymentDate
+    lastModifiedBy
+    lastModifiedAt
+    createdBy
+    createdAt
+  }
+}
+
+```
+
 ## Create a contract
 ```
 mutation CreateAContract {

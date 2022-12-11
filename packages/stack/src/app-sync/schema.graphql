@@ -151,6 +151,11 @@ input CreateContractInput {
   terms: String!
 }
 
+input CreateJobInput {
+  description: String!
+  price: Float!
+}
+
 """# Inputs"""
 input CreateProfileInput {
   id: String!
@@ -161,16 +166,17 @@ input CreateProfileInput {
   type: ProfileType!
 }
 
-type Job {
+type Job implements Audited @aws_cognito_user_pools {
   id: ID!
+  contractorId: ID!
   description: String!
   price: Float!
   paid: Boolean!
   paymentDate: AWSDateTime
   createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-  createdBy: String
-  updatedBy: String
+  lastModifiedAt: AWSDateTime!
+  createdBy: String!
+  lastModifiedBy: String!
 }
 
 type JobConnection {
@@ -188,6 +194,7 @@ input MakeProfileDepositInput {
 }
 
 type Mutation {
+  createJob(input: CreateJobInput!): Job @aws_cognito_user_pools
   payJob(id: ID!): Job
   createContract(input: CreateContractInput!): Contract @aws_cognito_user_pools
   createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools

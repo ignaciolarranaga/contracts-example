@@ -8,26 +8,24 @@ import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
 import {
-  MutationCreateContractArgs,
-  Contract,
-  ContractStatus,
+  MutationCreateJobArgs,
+  Job,
   ProfileType,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
-import errorCodes from 'error-codes';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 /**
- * Creates a new contract
+ * Creates a new job
  * @param event The AppSync event received
  * @param context The context of the invocation
  * @param callback The invocation callback to report errors
  * @returns The profile created
  */
-export default async function createProfile(
-  event: AppSyncResolverEvent<MutationCreateContractArgs>,
+export default async function createJob(
+  event: AppSyncResolverEvent<MutationCreateJobArgs>,
   context: Context,
   callback: Callback
 ): Promise<any> {
@@ -36,22 +34,16 @@ export default async function createProfile(
   const currentTime = new Date();
   const item = prepareItem(id, currentUser, event, currentTime);
 
-  if (item.contractorId === item.clientId) {
-    callback(errorCodes.CAN_NOT_SELF_CONTRACT);
-    return;
-  }
-
   console.log(
-    `Creating contract between ${item.contractorId} and ${item.clientId} on job: ${item.jobId}`
+    `Creating a job of ${currentUser}: ${item.description}`
   );
 
   await documentClient
     .transactWrite({
       TransactItems: [
         prepareContractorProfileExistsAndItIsAContractorCheckCondition(item),
-        prepareClientProfileExistsAndItIsAClientCheckCondition(item),
         {
-          // Insert the new contract
+          // Insert the new job
           Put: {
             TableName: process.env.TABLE_NAME!,
             Item: item,
@@ -66,30 +58,8 @@ export default async function createProfile(
   return item;
 }
 
-function prepareClientProfileExistsAndItIsAClientCheckCondition(
-  item: Contract & DynamoDBItem
-): DocumentClient.TransactWriteItem {
-  return {
-    ConditionCheck: {
-      TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Profile#${item.clientId}`,
-        SK: `Profile#${item.clientId}`,
-      },
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK) AND #type = :client_type',
-      ExpressionAttributeNames: {
-        '#type': 'type',
-      },
-      ExpressionAttributeValues: {
-        ':client_type': ProfileType.CLIENT,
-      },
-    },
-  };
-}
-
 function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
-  item: Contract & DynamoDBItem
+  item: Job & DynamoDBItem
 ): DocumentClient.TransactWriteItem {
   return {
     ConditionCheck: {
@@ -113,25 +83,22 @@ function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
 function prepareItem(
   id: string,
   currentUser: string,
-  event: AppSyncResolverEvent<MutationCreateContractArgs>,
+  event: AppSyncResolverEvent<MutationCreateJobArgs>,
   currentTime: Date
-): Contract & DynamoDBItem {
+): Job & DynamoDBItem {
   return {
-    PK: `Contract#${id}`,
-    SK: `Contract#${id}`,
-    __typename: 'Contract',
+    PK: `Job#${id}`,
+    SK: `Job#${id}`,
+    __typename: 'Job',
 
     id,
     contractorId: currentUser,
-    clientId: event.arguments.input.clientId,
-    jobId: event.arguments.input.jobId,
-    terms: event.arguments.input.terms,
-    status: ContractStatus.NEW,
+    description: event.arguments.input.description,
+    price: event.arguments.input.price,
+    paid: false,
 
     PK1: `Contractor#${currentUser}`,
-    SK1: ContractStatus.NEW,
-    PK2: `Client#${event.arguments.input.clientId}`,
-    SK2: ContractStatus.NEW,
+    SK1: `Job#${id}`,
 
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,

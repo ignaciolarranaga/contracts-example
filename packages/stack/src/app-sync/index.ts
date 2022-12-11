@@ -99,6 +99,7 @@ function prepareDynamoDbResolvers(dynamoDBTableDataSource: DynamoDbDataSource) {
 function prepareLambdaResolvers(resolversDataSource: LambdaDataSource) {
   for (const operation of [
     { typeName: 'Mutation', fieldName: 'createContract' },
+    { typeName: 'Mutation', fieldName: 'createJob' },
     { typeName: 'Mutation', fieldName: 'createProfile' },
     { typeName: 'Mutation', fieldName: 'makeProfileDeposit' },
   ]) {
