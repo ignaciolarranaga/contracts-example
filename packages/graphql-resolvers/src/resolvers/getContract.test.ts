@@ -1,4 +1,9 @@
-import { Contract, Job, Profile, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import {
+  Contract,
+  Job,
+  Profile,
+  ProfileType,
+} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -13,7 +18,12 @@ import {
 
 init();
 
-let sampleContractorProfile: Profile, sampleOtherContractorProfile: Profile, sampleClientProfile: Profile, sampleOtherClientProfile: Profile, sampleJob: Job, sampleContract: Contract;
+let sampleContractorProfile: Profile,
+  sampleOtherContractorProfile: Profile,
+  sampleClientProfile: Profile,
+  sampleOtherClientProfile: Profile,
+  sampleJob: Job,
+  sampleContract: Contract;
 beforeAll(async () => {
   sampleContractorProfile = await createProfile({
     id: uuid(),
@@ -101,7 +111,9 @@ describe('getContract', () => {
       expect(true).toBe(false);
     } catch (error: any) {
       // Assert
-      expect(error.errors[0].message).toBe('You are not allowed to retrieve this contract');
+      expect(error.errors[0].message).toBe(
+        'You are not allowed to retrieve this contract'
+      );
     }
   });
 
@@ -116,7 +128,9 @@ describe('getContract', () => {
       expect(true).toBe(false);
     } catch (error: any) {
       // Assert
-      expect(error.errors[0].message).toBe('You are not allowed to retrieve this contract');
+      expect(error.errors[0].message).toBe(
+        'You are not allowed to retrieve this contract'
+      );
     }
   });
 });
