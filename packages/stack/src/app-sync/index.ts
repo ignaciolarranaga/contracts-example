@@ -82,6 +82,11 @@ function prepareDynamoDbResolvers(dynamoDBTableDataSource: DynamoDbDataSource) {
       fieldName: 'listContracts',
       dataSource: dynamoDBTableDataSource,
     },
+    {
+      typeName: 'Query',
+      fieldName: 'listJobs',
+      dataSource: dynamoDBTableDataSource,
+    },
   ]) {
     operation.dataSource.createResolver({
       typeName: operation.typeName,

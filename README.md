@@ -63,16 +63,19 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 | Entity            | PK                 | SK                 | PK1                   | SK1             | PK2                   | SK2             |
 |-------------------|--------------------|--------------------|-----------------------|-----------------|-----------------------|-----------------|
 | Profile           | Profile#[USERNAME] | Profile#[USERNAME] |                       |                 |                       |                 |
-| Job               | Job#[ID]           | Job#[ID]           |                       |                 |                       |                 |
+| Job               | Job#[ID]           | Job#[ID]           | Contractor#[USERNAME] | Paid#[PAID]     | Client#[USERNAME]     | Paid#[PAID]     |
 | Contract          | Contract#[ID]      | Contract#[ID]      | Contractor#[USERNAME] | Status#[STATUS] | Client#[USERNAME]     | Status#[STATUS] |
 
 ### Access Patterns
 
 * Access Contract by ID: `PK = Contract#[ID] AND SK = Contract#[ID]`
 * List Non Terminated Contracts by Profile (Client or Contractor):
-  * Non-Terminated Contracts for a Contractor: `PK1 = Contractor#[USERNAME] AND SK1 BETWEEN 1 AND 2`
-  * Non-Terminated Contracts for a Client: `PK2 = Client#[USERNAME] AND SK2 BETWEEN 1 AND 2`
+  * Non-Terminated Contracts for a Contractor: `PK1 = Contractor#[USERNAME] AND SK1 BETWEEN Status#IN_PROGRESS AND Status#NEW`
+  * Non-Terminated Contracts for a Client: `PK2 = Client#[USERNAME] AND SK2 BETWEEN Status#IN_PROGRESS AND Status#NEW`
   * Please note that: IN_PROGRESS < NEW < TERMINATED if ordered alphabetically
+* List Unpaid Jobs:
+  * Non-Terminated Contracts for a Contractor: `PK1 = Contractor#[USERNAME] AND SK1 = Paid#false`
+  * Non-Terminated Contracts for a Client: `PK2 = Client#[USERNAME] AND SK2 = Paid#false`
 
 ## HOW-TOs
 

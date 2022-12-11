@@ -16,7 +16,6 @@ import { DynamoDBItem } from 'utils/DynamoDBItem';
 import {
   prepareClientProfileExistsAndItIsAClientCheckCondition,
   prepareContractorProfileExistsAndItIsAContractorCheckCondition,
-  prepareJobExistsAndBelongsToContractorCheckCondition,
 } from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
 
@@ -57,12 +56,28 @@ export default async function createProfile(
           item.contractorId
         ),
         prepareClientProfileExistsAndItIsAClientCheckCondition(item.clientId),
-        ...event.arguments.input.jobIds.map(jobId =>
-          prepareJobExistsAndBelongsToContractorCheckCondition(
-            jobId,
-            item.contractorId
-          )
-        ),
+        ...event.arguments.input.jobIds.map(jobId => {
+          return {
+            // Update the jobs so we know they are assigned
+            Update: {
+              TableName: process.env.TABLE_NAME!,
+              Key: {
+                PK: `Job#${jobId}`,
+                SK: `Job#${jobId}`,
+              },
+              UpdateExpression: 'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2',
+              ConditionExpression: // Job exists and belongs to the contractor
+                'attribute_exists(PK) AND attribute_exists(SK) AND contractorId = :contractor_id',
+              ExpressionAttributeValues: {
+                ':pk1': `Contractor#${item.contractorId}`,
+                ':sk1': 'Paid#false',
+                ':pk2': `Client#${item.clientId}`,
+                ':sk2': 'Paid#false',
+                ':contractor_id': item.contractorId,
+              },
+            },
+          };
+        }),
         {
           // Insert the new contract
           Put: {

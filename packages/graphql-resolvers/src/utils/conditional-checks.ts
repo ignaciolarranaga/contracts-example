@@ -45,23 +45,3 @@ export function prepareContractorProfileExistsAndItIsAContractorCheckCondition(
     },
   };
 }
-
-export function prepareJobExistsAndBelongsToContractorCheckCondition(
-  jobId: string,
-  contractorId: string
-): DocumentClient.TransactWriteItem {
-  return {
-    ConditionCheck: {
-      TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Job#${jobId}`,
-        SK: `Job#${jobId}`,
-      },
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK) AND contractorId = :contractor_id',
-      ExpressionAttributeValues: {
-        ':contractor_id': contractorId,
-      },
-    },
-  };
-}

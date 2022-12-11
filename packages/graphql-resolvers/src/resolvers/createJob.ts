@@ -71,9 +71,6 @@ function prepareItem(
     price: event.arguments.input.price,
     paid: false,
 
-    PK1: `Contractor#${currentUser}`,
-    SK1: `Job#${id}`,
-
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,
     lastModifiedAt: currentTime.toISOString(),

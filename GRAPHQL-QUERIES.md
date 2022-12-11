@@ -61,11 +61,13 @@ mutation CreateSampleJobs {
 **Pre-requisite**: Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {clientId: "jane", jobIds: ["dfeb3823-506e-4c7f-b101-31eec86019e9", "5ec222bb-32b5-40b6-a8c2-d78ae5c9e064"], terms: "None"}) {
+  createContract(input: {clientId: "jane", jobIds: ["a655bad9-a086-472e-aa97-082597d2ce12", "56912cae-e0a3-40bd-af14-129344ca6e3b"], terms: "None"}) {
     id
     contractorId
     clientId
     jobIds
+    terms
+    status
     createdBy
     createdAt
     lastModifiedBy
@@ -98,7 +100,7 @@ query ListContracts {
 **Pre-requisite**: Adjust the id below to match the one you just created.
 ```
 query GetAContract {
-  getContract(id: "7ae5051b-495c-4426-a3aa-487017251ad7") {
+  getContract(id: "94165fa0-9e93-4968-b141-c14fa926499b") {
     createdBy
     createdAt
     id
