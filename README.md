@@ -1,10 +1,34 @@
 # Contracts Example
 
+This is an example around 3 main entities and some business rules.
+
+### Entities
+* Profile:
+  * A profile can be either a `client` or a `contractor`.
+  * clients create contracts with contractors. contractor does jobs for clients and get paid.
+  * Each profile has a balance property.
+
+* Contract:
+  * A contract between and client and a contractor.
+  * Contracts have 3 statuses: `new`, `in_progress`, `terminated`.
+  * contracts are considered active only when in status `in_progress`
+  * Contracts group jobs within them.
+
+* Job
+  * contractor get paid for jobs by clients under a certain contract.
+
+### Business Rules
+* **getContract(id)**: it returns the contract only if it belongs to the profile calling (either client or contractor) (see the [integration tests](packages/graphql-resolvers/src/resolvers/getContract.test.ts))
+
+You can find sample GraphQL operations around this model in [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md).
+
 ## Getting Started
 
 You have 2 ways to start developing:
 
-1. Using [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#git@github.com:ignaciolarranaga/contracts-example.git), or doing a local setup manually as described in the how-tos.
+1. Using Gitpod, or doing a local setup manually as described in the how-tos.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#git@github.com:ignaciolarranaga/contracts-example.git)
 
 2. Once you are there you will need to define an AWS account to deploy your stack, i.e.:
 ```
