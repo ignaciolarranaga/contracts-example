@@ -7,7 +7,7 @@ import {
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { v4 as uuid } from 'uuid';
 
-import { init } from 'utils/test-utilities';
+import { init } from 'utils/test';
 
 const CREATE_A_PROFILE_QUERY = /* GraphQL */ `
   mutation CreateProfiles($input: CreateProfileInput!) {

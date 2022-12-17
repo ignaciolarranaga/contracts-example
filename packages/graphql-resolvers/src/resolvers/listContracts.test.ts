@@ -7,15 +7,16 @@ import {
 import { v4 as uuid } from 'uuid';
 
 import {
-  createContract,
-  createJob,
-  createProfile,
-  getContract,
   init,
-  listContracts,
   loginWith,
   SAMPLE_VALID_PASSWORD,
-} from 'utils/test-utilities';
+} from 'utils/test';
+import {
+  createContract,
+  listContracts,
+} from 'utils/test/contract';
+import { createJob } from 'utils/test/job';
+import { createProfile } from 'utils/test/profile';
 
 init();
 
