@@ -238,6 +238,7 @@ export type Profile = Audited & {
   lastModifiedAt: Scalars['AWSDateTime'];
   lastModifiedBy?: Maybe<Scalars['String']>;
   lastName: Scalars['String'];
+  maxDeposit: Scalars['Float'];
   profession: Scalars['String'];
   type: ProfileType;
 };

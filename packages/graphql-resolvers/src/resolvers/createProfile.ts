@@ -57,6 +57,7 @@ export default async function createProfile(
     balance: 0,
 
     amountDue: 0,
+    maxDeposit: 0,
 
     createdAt: currentTime.toISOString(),
     createdBy: currentUser,

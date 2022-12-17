@@ -209,6 +209,7 @@ type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
   balance: Float!
   type: ProfileType!
   amountDue: Float!
+  maxDeposit: Float!
   createdAt: AWSDateTime!
   lastModifiedAt: AWSDateTime!
   createdBy: String

@@ -12,10 +12,11 @@ import {
   Contract,
   ContractStatus,
   ProfileType,
+  Profile,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
 import {
-  prepareContractorProfileExistsAndItIsAContractorCheckCondition,
+  prepareContractorProfileExistsAndItIsAContractorCheckCondition as profileExistsAndItIsAContractorCheckCondition,
 } from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
 
@@ -44,19 +45,18 @@ export default async function createProfile(
   }
 
   console.log(
-    `Creating contract between ${item.contractorId} and ${
+    `Creating a contract between ${item.contractorId} and ${
       item.clientId
     } on jobs: ${JSON.stringify(item.jobIds)}`
   );
 
-  const amountDue = await calculateAmountDue(item.jobIds);
+  const amountDue = await getCurrentAmountDue(item.clientId);
+  const jobsTotal = await calculateJobsTotal(item.jobIds);
 
   await documentClient
     .transactWrite({
       TransactItems: [
-        prepareContractorProfileExistsAndItIsAContractorCheckCondition(
-          item.contractorId
-        ),
+        profileExistsAndItIsAContractorCheckCondition(item.contractorId),
         {
           Update: { // Update the client amount due
             TableName: process.env.TABLE_NAME!,
@@ -64,18 +64,29 @@ export default async function createProfile(
               PK: `Profile#${item.clientId}`,
               SK: `Profile#${item.clientId}`,
             },
-            UpdateExpression: 'SET amountDue = amountDue + :amountDue',
-            ConditionExpression: // The profile exists and it is a client
-              'attribute_exists(PK) AND attribute_exists(SK) AND #type = :clientType',
+            UpdateExpression: 'SET amountDue = :amountDue, maxDeposit = :maxDeposit',
+            ConditionExpression:
+              // The profile exists
+              'attribute_exists(PK) AND attribute_exists(SK) AND ' +
+              // The profile is a client
+              '#type = :clientType AND ' +
+              // The amountDue has not changed (prevents simultaneous updates)
+              'amountDue = :oldAmountDue',
             ExpressionAttributeNames: {
               '#type': 'type',
             },
             ExpressionAttributeValues: {
               ':clientType': ProfileType.CLIENT,
-              ':amountDue': amountDue
+              ':oldAmountDue': amountDue,
+              // Increasing the amount due
+              ':amountDue': amountDue + jobsTotal,
+              // Adjusting the maximum deposit as per the business rule:
+              // "a client can't deposit more than 25% his total of jobs to pay"
+              ':maxDeposit': (amountDue + jobsTotal) / 4
             },
           }
         },
+        // TODO: Protect to not exceed the max number of operations
         ...event.arguments.input.jobIds.map(jobId => {
           return {
             // Update the jobs so we know they are assigned
@@ -86,7 +97,7 @@ export default async function createProfile(
                 SK: `Job#${jobId}`,
               },
               UpdateExpression: 'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractorId',
-              ConditionExpression: // Job exists and belongs to the contractor
+              ConditionExpression: // Job exists and belongs to the client
                 'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :clientId',
               ExpressionAttributeValues: {
                 ':pk1': `Contractor#${item.contractorId}`,
@@ -115,7 +126,19 @@ export default async function createProfile(
   return item;
 }
 
-async function calculateAmountDue(jobIds: string[]): Promise<Number> {
+async function getCurrentAmountDue(clientId: string) {
+  const profile = (await documentClient.get({
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Profile#${clientId}`,
+        SK: `Profile#${clientId}`,
+      },
+    }).promise()).Item as Profile;
+
+  return profile.amountDue;
+}
+
+async function calculateJobsTotal(jobIds: string[]): Promise<number> {
   const result = await documentClient.batchGet({
     RequestItems: {
       [process.env.TABLE_NAME!]: {

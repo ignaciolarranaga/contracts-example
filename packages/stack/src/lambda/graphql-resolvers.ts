@@ -53,7 +53,13 @@ export function buildGraphQLResolversLambda(
   // Add Permissions Over the DynamoDB Table
   lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: ['dynamodb:ConditionCheckItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem', 'dynamodb:BatchGetItem'],
+      actions: [
+        'dynamodb:ConditionCheckItem',
+        'dynamodb:PutItem',
+        'dynamodb:UpdateItem',
+        'dynamodb:BatchGetItem',
+        'dynamodb:GetItem',
+      ],
       resources: [dynamoDBTable.tableArn],
     })
   );
