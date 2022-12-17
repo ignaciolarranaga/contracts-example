@@ -15,9 +15,7 @@ import {
   Profile,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { DynamoDBItem } from 'utils/DynamoDBItem';
-import {
-  prepareContractorProfileExistsAndItIsAContractorCheckCondition as profileExistsAndItIsAContractorCheckCondition,
-} from 'utils/conditional-checks';
+import { prepareContractorProfileExistsAndItIsAContractorCheckCondition as profileExistsAndItIsAContractorCheckCondition } from 'utils/conditional-checks';
 import errorCodes from 'error-codes';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -57,68 +55,20 @@ export default async function createProfile(
     .transactWrite({
       TransactItems: [
         profileExistsAndItIsAContractorCheckCondition(item.contractorId),
-        {
-          Update: { // Update the client amount due
-            TableName: process.env.TABLE_NAME!,
-            Key: {
-              PK: `Profile#${item.clientId}`,
-              SK: `Profile#${item.clientId}`,
-            },
-            UpdateExpression: 'SET amountDue = :amountDue, maxDeposit = :maxDeposit',
-            ConditionExpression:
-              // The profile exists
-              'attribute_exists(PK) AND attribute_exists(SK) AND ' +
-              // The profile is a client
-              '#type = :clientType AND ' +
-              // The amountDue has not changed (prevents simultaneous updates)
-              'amountDue = :oldAmountDue',
-            ExpressionAttributeNames: {
-              '#type': 'type',
-            },
-            ExpressionAttributeValues: {
-              ':clientType': ProfileType.CLIENT,
-              ':oldAmountDue': amountDue,
-              // Increasing the amount due
-              ':amountDue': amountDue + jobsTotal,
-              // Adjusting the maximum deposit as per the business rule:
-              // "a client can't deposit more than 25% his total of jobs to pay"
-              ':maxDeposit': (amountDue + jobsTotal) / 4
-            },
-          }
-        },
+        updateClientAmountDueAndMaxDepositTransactItem(
+          item.clientId,
+          amountDue,
+          jobsTotal
+        ),
         // TODO: Protect to not exceed the max number of operations
-        ...event.arguments.input.jobIds.map(jobId => {
-          return {
-            // Update the jobs so we know they are assigned
-            Update: {
-              TableName: process.env.TABLE_NAME!,
-              Key: {
-                PK: `Job#${jobId}`,
-                SK: `Job#${jobId}`,
-              },
-              UpdateExpression: 'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractorId',
-              ConditionExpression: // Job exists and belongs to the client
-                'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :clientId',
-              ExpressionAttributeValues: {
-                ':pk1': `Contractor#${item.contractorId}`,
-                ':sk1': 'Paid#false',
-                ':pk2': `Client#${item.clientId}`,
-                ':sk2': 'Paid#false',
-                ':clientId': item.clientId,
-                ':contractorId': item.contractorId,
-              },
-            },
-          };
-        }),
-        {
-          // Insert the new contract
-          Put: {
-            TableName: process.env.TABLE_NAME!,
-            Item: item,
-            ConditionExpression:
-              'attribute_not_exists(PK) AND attribute_not_exists(SK)',
-          },
-        },
+        ...event.arguments.input.jobIds.map(jobId =>
+          updateJobClientContractorTransactItem(
+            jobId,
+            item.contractorId,
+            item.clientId
+          )
+        ),
+        insertNewContractTransactItem(item),
       ],
     })
     .promise();
@@ -126,36 +76,16 @@ export default async function createProfile(
   return item;
 }
 
-async function getCurrentAmountDue(clientId: string) {
-  const profile = (await documentClient.get({
+function insertNewContractTransactItem(item: Contract & DynamoDBItem) {
+  return {
+    // Insert the new contract
+    Put: {
       TableName: process.env.TABLE_NAME!,
-      Key: {
-        PK: `Profile#${clientId}`,
-        SK: `Profile#${clientId}`,
-      },
-    }).promise()).Item as Profile;
-
-  return profile.amountDue;
-}
-
-async function calculateJobsTotal(jobIds: string[]): Promise<number> {
-  const result = await documentClient.batchGet({
-    RequestItems: {
-      [process.env.TABLE_NAME!]: {
-        Keys: jobIds.map(jobId => { return { PK: `Job#${jobId}`, SK: `Job#${jobId}` } }),
-        ProjectionExpression: 'price'
-      }
-    }
-  }).promise();
-
-  let amountDue = 0;
-  if (result.Responses && result.Responses[process.env.TABLE_NAME!].length > 0) {
-    for (const item of result.Responses[process.env.TABLE_NAME!]) {
-      amountDue += item.price
-    }
-  }
-
-  return amountDue;
+      Item: item,
+      ConditionExpression:
+        'attribute_not_exists(PK) AND attribute_not_exists(SK)',
+    },
+  };
 }
 
 function prepareItem(
@@ -186,4 +116,114 @@ function prepareItem(
     lastModifiedAt: currentTime.toISOString(),
     lastModifiedBy: currentUser,
   };
+}
+
+function updateJobClientContractorTransactItem(
+  jobId: string,
+  contractorId: string,
+  clientId: string
+) {
+  return {
+    // Update the jobs so we know they are assigned
+    Update: {
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Job#${jobId}`,
+        SK: `Job#${jobId}`,
+      },
+      UpdateExpression:
+        'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractorId',
+      // Job exists and belongs to the client
+      ConditionExpression:
+        'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :clientId',
+      ExpressionAttributeValues: {
+        ':pk1': `Contractor#${contractorId}`,
+        ':sk1': 'Paid#false',
+        ':pk2': `Client#${clientId}`,
+        ':sk2': 'Paid#false',
+        ':clientId': clientId,
+        ':contractorId': contractorId,
+      },
+    },
+  };
+}
+
+function updateClientAmountDueAndMaxDepositTransactItem(
+  clientId: string,
+  amountDue: number,
+  jobsTotal: number
+) {
+  return {
+    Update: {
+      // Update the client amount due
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Profile#${clientId}`,
+        SK: `Profile#${clientId}`,
+      },
+      UpdateExpression: 'SET amountDue = :amountDue, maxDeposit = :maxDeposit',
+      ConditionExpression:
+        // The profile exists
+        'attribute_exists(PK) AND attribute_exists(SK) AND ' +
+        // The profile is a client
+        '#type = :clientType AND ' +
+        // The amountDue has not changed (prevents simultaneous updates)
+        'amountDue = :oldAmountDue',
+      ExpressionAttributeNames: {
+        '#type': 'type',
+      },
+      ExpressionAttributeValues: {
+        ':clientType': ProfileType.CLIENT,
+        ':oldAmountDue': amountDue,
+        // Increasing the amount due
+        ':amountDue': amountDue + jobsTotal,
+        // Adjusting the maximum deposit as per the business rule:
+        // "a client can't deposit more than 25% his total of jobs to pay"
+        ':maxDeposit': (amountDue + jobsTotal) / 4,
+      },
+    },
+  };
+}
+
+async function getCurrentAmountDue(clientId: string) {
+  const profile = (
+    await documentClient
+      .get({
+        TableName: process.env.TABLE_NAME!,
+        Key: {
+          PK: `Profile#${clientId}`,
+          SK: `Profile#${clientId}`,
+        },
+      })
+      .promise()
+  ).Item as Profile;
+
+  return profile.amountDue;
+}
+
+async function calculateJobsTotal(jobIds: string[]): Promise<number> {
+  const result = await documentClient
+    .batchGet({
+      RequestItems: {
+        [process.env.TABLE_NAME!]: {
+          Keys: jobIds.map(jobId => {
+            return { PK: `Job#${jobId}`, SK: `Job#${jobId}` };
+          }),
+          ProjectionExpression: 'price',
+        },
+      },
+    })
+    .promise();
+
+  let amountDue = 0;
+  if (
+    result.Responses &&
+    result.Responses[process.env.TABLE_NAME!].length > 0
+  ) {
+    for (const item of result.Responses[process.env.TABLE_NAME!]) {
+      amountDue += item.price;
+    }
+  }
+
+  return amountDue;
 }
