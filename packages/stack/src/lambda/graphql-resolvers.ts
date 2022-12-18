@@ -1,4 +1,3 @@
-import { Duration } from 'aws-cdk-lib';
 import {
   Code,
   Function,
@@ -43,6 +42,17 @@ export function buildGraphQLResolversLambda(
     tracing: Tracing.ACTIVE,
   });
 
+  addPermissions(lambda, dynamoDBTable, userPool);
+
+  return lambda;
+}
+
+function addPermissions(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  lambda: Function,
+  dynamoDBTable: Table,
+  userPool: UserPool
+): void {
   // Add Permissions to Modify Users
   lambda.addToRolePolicy(
     new PolicyStatement({
@@ -50,6 +60,7 @@ export function buildGraphQLResolversLambda(
       resources: [userPool.userPoolArn],
     })
   );
+
   // Add Permissions Over the DynamoDB Table
   lambda.addToRolePolicy(
     new PolicyStatement({
@@ -63,6 +74,4 @@ export function buildGraphQLResolversLambda(
       resources: [dynamoDBTable.tableArn],
     })
   );
-
-  return lambda;
 }

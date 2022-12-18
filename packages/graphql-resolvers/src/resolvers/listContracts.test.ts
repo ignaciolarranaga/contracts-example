@@ -13,6 +13,17 @@ import { createProfile } from 'utils/test/profile';
 
 init();
 
+const SAMPLE_CONTRACTOR_PROFILE = {
+  password: SAMPLE_VALID_PASSWORD,
+  profession: 'Contractor',
+  type: ProfileType.CONTRACTOR,
+};
+const SAMPLE_CLIENT_PROFILE = {
+  password: SAMPLE_VALID_PASSWORD,
+  profession: 'Client',
+  type: ProfileType.CLIENT,
+};
+
 let sampleContractorProfile1: Profile,
   sampleContractorProfile2: Profile,
   sampleClientProfile1: Profile,
@@ -23,36 +34,28 @@ let sampleContractorProfile1: Profile,
   sampleContract2: Contract;
 beforeAll(async () => {
   sampleContractorProfile1 = await createProfile({
+    ...SAMPLE_CONTRACTOR_PROFILE,
     id: uuid(),
-    password: SAMPLE_VALID_PASSWORD,
     firstName: 'John',
     lastName: 'Doe',
-    profession: 'Contractor',
-    type: ProfileType.CONTRACTOR,
   });
   sampleContractorProfile2 = await createProfile({
+    ...SAMPLE_CONTRACTOR_PROFILE,
     id: uuid(),
-    password: SAMPLE_VALID_PASSWORD,
     firstName: 'Jess',
     lastName: 'Doe',
-    profession: 'Contractor',
-    type: ProfileType.CONTRACTOR,
   });
   sampleClientProfile1 = await createProfile({
+    ...SAMPLE_CLIENT_PROFILE,
     id: uuid(),
-    password: SAMPLE_VALID_PASSWORD,
     firstName: 'Jane',
     lastName: 'Doe',
-    profession: 'Client',
-    type: ProfileType.CLIENT,
   });
   sampleClientProfile2 = await createProfile({
+    ...SAMPLE_CLIENT_PROFILE,
     id: uuid(),
-    password: SAMPLE_VALID_PASSWORD,
     firstName: 'Jennifer',
     lastName: 'Doe',
-    profession: 'Client',
-    type: ProfileType.CLIENT,
   });
 
   // Contractor/Client 1
@@ -80,6 +83,7 @@ beforeAll(async () => {
   });
 });
 
+/* eslint-disable max-lines-per-function */
 describe('listContracts', () => {
   it('must list only the contracts of the contractor 1 when called by the contractor 1', async () => {
     // Arrange

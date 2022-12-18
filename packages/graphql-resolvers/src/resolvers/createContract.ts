@@ -27,7 +27,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
  * @param callback The invocation callback to report errors
  * @returns The profile created
  */
-export default async function createProfile(
+export default async function createContract(
   event: AppSyncResolverEvent<MutationCreateContractArgs>,
   context: Context,
   callback: Callback
@@ -43,9 +43,8 @@ export default async function createProfile(
   }
 
   console.log(
-    `Creating a contract between ${item.contractorId} and ${
-      item.clientId
-    } on jobs: ${JSON.stringify(item.jobIds)}`
+    `Creating a contract between ${item.contractorId} and ` +
+      `${item.clientId} on jobs: ${JSON.stringify(item.jobIds)}`
   );
 
   const amountDue = await getCurrentAmountDue(item.clientId);

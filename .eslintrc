@@ -13,6 +13,7 @@
   "rules": {
     "max-lines": ["error"],
     "max-lines-per-function": ["error"],
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }

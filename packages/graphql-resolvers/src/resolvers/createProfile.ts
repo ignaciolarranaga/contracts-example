@@ -40,11 +40,28 @@ export default async function createProfile(
     })
     .promise();
 
+  const item = createItem(event);
+  await documentClient
+    .put({
+      TableName: process.env.TABLE_NAME!,
+      Item: item,
+      ConditionExpression:
+        'attribute_not_exists(PK) AND attribute_not_exists(SK)',
+    })
+    .promise();
+
+  return item;
+}
+
+function createItem(
+  event: AppSyncResolverEvent<MutationCreateProfileArgs>
+): Profile & DynamoDBItem {
   const currentUser = event.identity
     ? (event.identity as AppSyncIdentityCognito).username
     : undefined;
   const currentTime = new Date();
-  const item: Profile & DynamoDBItem = {
+
+  return {
     PK: `Profile#${event.arguments.input.id}`,
     SK: `Profile#${event.arguments.input.id}`,
     __typename: 'Profile',
@@ -64,15 +81,4 @@ export default async function createProfile(
     lastModifiedAt: currentTime.toISOString(),
     lastModifiedBy: currentUser,
   };
-
-  await documentClient
-    .put({
-      TableName: process.env.TABLE_NAME!,
-      Item: item,
-      ConditionExpression:
-        'attribute_not_exists(PK) AND attribute_not_exists(SK)',
-    })
-    .promise();
-
-  return item;
 }
