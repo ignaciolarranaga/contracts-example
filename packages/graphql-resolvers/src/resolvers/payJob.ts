@@ -40,7 +40,9 @@ export default async function makeProfileDeposit(
 
   const contract = await getContract(job.contractId);
   const jobs = await getContractJobs(contract.jobIds);
-  const unpaidJobs = jobs.filter(job => !job.paid && job.id !== event.arguments.id);
+  const unpaidJobs = jobs.filter(
+    job => !job.paid && job.id !== event.arguments.id
+  );
 
   const client = await getClientProfile(currentUser);
   if (client.balance < job.price) {
@@ -62,7 +64,11 @@ export default async function makeProfileDeposit(
   return job;
 }
 
-function updateClientBalanceTransactItem(currentTime: Date, job: Job, client: Profile) {
+function updateClientBalanceTransactItem(
+  currentTime: Date,
+  job: Job,
+  client: Profile
+) {
   return {
     // Update the job so it is marked as paid
     Update: {
@@ -152,8 +158,15 @@ function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
   };
 }
 
-function updateContractTransactItem(currentTime: Date, contract: Contract, unpaidJobs: Job[]) {
-  const status = unpaidJobs.length === 0 ? ContractStatus.TERMINATED : ContractStatus.IN_PROGRESS;
+function updateContractTransactItem(
+  currentTime: Date,
+  contract: Contract,
+  unpaidJobs: Job[]
+) {
+  const status =
+    unpaidJobs.length === 0
+      ? ContractStatus.TERMINATED
+      : ContractStatus.IN_PROGRESS;
 
   return {
     // Update the contract status based on the unpaid jobs
@@ -166,7 +179,8 @@ function updateContractTransactItem(currentTime: Date, contract: Contract, unpai
       UpdateExpression:
         'SET #status = :status, sk1 = :sk1, sk2 = :sk2, ' +
         'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
-      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND lastModifiedAt = :prevLastModifiedAt',
+      ConditionExpression:
+        'attribute_exists(PK) AND attribute_exists(SK) AND lastModifiedAt = :prevLastModifiedAt',
       ExpressionAttributeNames: {
         '#status': 'status',
       },
@@ -176,7 +190,7 @@ function updateContractTransactItem(currentTime: Date, contract: Contract, unpai
         ':sk2': `Status#${status}`,
         ':lastModifiedAt': currentTime.toISOString(),
         ':lastModifiedBy': contract.clientId,
-        ':prevLastModifiedAt': contract.lastModifiedAt
+        ':prevLastModifiedAt': contract.lastModifiedAt,
       },
     },
   };
@@ -237,7 +251,7 @@ async function getContractJobs(jobIds: string[]): Promise<Job[]> {
     })
     .promise();
 
-  let jobs = [];
+  const jobs = [];
   if (
     result.Responses &&
     result.Responses[process.env.TABLE_NAME!].length > 0

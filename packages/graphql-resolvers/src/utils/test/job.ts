@@ -94,7 +94,9 @@ export async function payJob(id: string): Promise<Job> {
   }
 }
 
-export async function listJobs(filter: ListJobsFilterInput): Promise<JobConnection> {
+export async function listJobs(
+  filter: ListJobsFilterInput
+): Promise<JobConnection> {
   const rawResult = (await API.graphql({
     query: LIST_JOBS_QUERY,
     variables: { filter } as QueryListJobsArgs,

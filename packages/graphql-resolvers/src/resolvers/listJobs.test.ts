@@ -1,17 +1,10 @@
-import {
-  Contract,
-  Job,
-  ProfileType,
-} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import { Job, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { v4 as uuid } from 'uuid';
 
 import { init, loginWith, SAMPLE_VALID_PASSWORD } from 'utils/test';
 import { createContract } from 'utils/test/contract';
 import { createJob, listJobs, payJob } from 'utils/test/job';
-import {
-  createProfile,
-  makeProfileDeposit,
-} from 'utils/test/profile';
+import { createProfile, makeProfileDeposit } from 'utils/test/profile';
 
 init();
 
