@@ -177,7 +177,7 @@ function updateContractTransactItem(
         SK: `Contract#${contract.id}`,
       },
       UpdateExpression:
-        'SET #status = :status, sk1 = :sk1, sk2 = :sk2, ' +
+        'SET #status = :status, SK1 = :sk1, SK2 = :sk2, ' +
         'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
       ConditionExpression:
         'attribute_exists(PK) AND attribute_exists(SK) AND lastModifiedAt = :prevLastModifiedAt',
