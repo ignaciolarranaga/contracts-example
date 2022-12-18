@@ -1,7 +1,4 @@
-import {
-  AppSyncResolverEvent,
-  AppSyncIdentityCognito,
-} from 'aws-lambda';
+import { AppSyncResolverEvent, AppSyncIdentityCognito } from 'aws-lambda';
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
@@ -17,7 +14,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
  * @returns The profile created
  */
 export default async function createJob(
-  event: AppSyncResolverEvent<MutationCreateJobArgs>,
+  event: AppSyncResolverEvent<MutationCreateJobArgs>
 ): Promise<any> {
   const id = uuid();
   const currentUser = (event.identity as AppSyncIdentityCognito).username!;

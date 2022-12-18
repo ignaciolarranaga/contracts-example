@@ -55,11 +55,7 @@ export default async function makeProfileDeposit(
   return job;
 }
 
-function updateClientBalance(
-  currentTime: Date,
-  job: Job,
-  client: Profile,
-) {
+function updateClientBalance(currentTime: Date, job: Job, client: Profile) {
   return {
     // Update the job so it is marked as paid
     Update: {
@@ -88,10 +84,7 @@ function updateClientBalance(
   };
 }
 
-function updateContractorBalance(
-  currentTime: Date,
-  job: Job,
-) {
+function updateContractorBalance(currentTime: Date, job: Job) {
   return {
     // Update the job so it is marked as paid
     Update: {
@@ -102,8 +95,7 @@ function updateContractorBalance(
       },
       UpdateExpression:
         'SET balance = balance + :amount, lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
-      ConditionExpression:
-        'attribute_exists(PK) AND attribute_exists(SK)',
+      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK)',
       ExpressionAttributeValues: {
         ':amount': job.price,
         ':lastModifiedAt': currentTime.toISOString(),
@@ -113,10 +105,7 @@ function updateContractorBalance(
   };
 }
 
-function markJobAsPaidTransactItem(
-  currentTime: Date,
-  job: Job
-) {
+function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
   // Intentionally modifying the job so it can be returned
   job.paid = true;
   job.paymentDate = currentTime.toISOString();
@@ -171,7 +160,8 @@ async function getJob(id: string) {
 }
 
 async function getClientProfile(clientId: string) {
-  return (await documentClient
+  return (
+    await documentClient
       .get({
         TableName: process.env.TABLE_NAME!,
         Key: {

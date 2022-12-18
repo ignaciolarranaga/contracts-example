@@ -10,6 +10,8 @@ export default {
     'CAN_ONLY_MAKE_DEPOSITS_TO_CLIENTS: You can only make deposits to client balances',
   CAN_NOT_MAKE_DEPOSITS_OVER_25_PERCENT_OF_AMOUNT_DUE:
     'CAN_NOT_MAKE_DEPOSITS_OVER_25_PERCENT_OF_AMOUNT_DUE: You can not make a deposit that exceeds 25% of your current amount due',
-  CAN_NOT_PAY_A_JOB_OUTSIDE_A_CONTRACT: 'CAN_NOT_PAY_A_JOB_OUTSIDE_A_CONTRACT: You can not paid a job that is yet not in a contract',
-  NO_ENOUGH_BALANCE_TO_PAY_THE_JOB: 'NO_ENOUGH_BALANCE_TO_PAY_THE_JOB: You have no enough balance to pay for the job',
+  CAN_NOT_PAY_A_JOB_OUTSIDE_A_CONTRACT:
+    'CAN_NOT_PAY_A_JOB_OUTSIDE_A_CONTRACT: You can not paid a job that is yet not in a contract',
+  NO_ENOUGH_BALANCE_TO_PAY_THE_JOB:
+    'NO_ENOUGH_BALANCE_TO_PAY_THE_JOB: You have no enough balance to pay for the job',
 };

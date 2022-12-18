@@ -66,8 +66,8 @@ describe('makeProfileDeposit', () => {
       // Assert
       expect(error.errors[0].message).toBe(
         'CAN_NOT_MAKE_DEPOSITS_OVER_25_PERCENT_OF_AMOUNT_DUE: ' +
-        'You can not make a deposit that exceeds 25% of your current amount due ' +
-        `(max deposit $${sampleJob.price / 4})`
+          'You can not make a deposit that exceeds 25% of your current amount due ' +
+          `(max deposit $${sampleJob.price / 4})`
       );
     }
   });
