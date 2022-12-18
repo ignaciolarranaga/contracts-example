@@ -83,7 +83,7 @@ mutation CreateSampleJobs {
 * Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {contractorId: "jane", jobIds: ["a2483d2b-cd9f-4c74-a006-652704ae6a0d", "8636671d-6d34-4d0f-987f-6933fddd4c38"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["c3841675-8c30-4724-a4f8-83533d9323d7", "734a26e5-c5b4-4b2f-84de-e398252f138d"], terms: "None"}) {
     id
     clientId
     contractorId
@@ -174,10 +174,12 @@ mutation MakeADeposit {
 ```
 
 ## Pay for a Job
-**Pre-requisite**: Login with john and made a deposit of almost 2000.
+**Pre-requisites**:
+* Login with john and made a deposit of almost 2000.
+* Adjust the jobId below to match the priced on 2000.
 ```
 mutation PayJob {
-  payJob(id: "8636671d-6d34-4d0f-987f-6933fddd4c38") {
+  payJob(id: "c3841675-8c30-4724-a4f8-83533d9323d7") {
     id
     description
     clientId

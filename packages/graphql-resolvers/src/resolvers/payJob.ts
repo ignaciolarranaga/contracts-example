@@ -8,6 +8,8 @@ import AWS from 'aws-sdk';
 
 import errorCodes from 'error-codes';
 import {
+  Contract,
+  ContractStatus,
   Job,
   MutationPayJobArgs,
   Profile,
@@ -36,6 +38,10 @@ export default async function makeProfileDeposit(
     return;
   }
 
+  const contract = await getContract(job.contractId);
+  const jobs = await getContractJobs(contract.jobIds);
+  const unpaidJobs = jobs.filter(job => !job.paid && job.id !== event.arguments.id);
+
   const client = await getClientProfile(currentUser);
   if (client.balance < job.price) {
     callback(errorCodes.NO_ENOUGH_BALANCE_TO_PAY_THE_JOB);
@@ -45,9 +51,10 @@ export default async function makeProfileDeposit(
   await documentClient
     .transactWrite({
       TransactItems: [
-        updateClientBalance(currentTime, job, client),
-        updateContractorBalance(currentTime, job),
+        updateClientBalanceTransactItem(currentTime, job, client),
+        updateContractorBalanceTransactItem(currentTime, job),
         markJobAsPaidTransactItem(currentTime, job),
+        updateContractTransactItem(currentTime, contract, unpaidJobs),
       ],
     })
     .promise();
@@ -55,7 +62,7 @@ export default async function makeProfileDeposit(
   return job;
 }
 
-function updateClientBalance(currentTime: Date, job: Job, client: Profile) {
+function updateClientBalanceTransactItem(currentTime: Date, job: Job, client: Profile) {
   return {
     // Update the job so it is marked as paid
     Update: {
@@ -84,7 +91,7 @@ function updateClientBalance(currentTime: Date, job: Job, client: Profile) {
   };
 }
 
-function updateContractorBalance(currentTime: Date, job: Job) {
+function updateContractorBalanceTransactItem(currentTime: Date, job: Job) {
   return {
     // Update the job so it is marked as paid
     Update: {
@@ -145,6 +152,50 @@ function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
   };
 }
 
+function updateContractTransactItem(currentTime: Date, contract: Contract, unpaidJobs: Job[]) {
+  const status = unpaidJobs.length === 0 ? ContractStatus.TERMINATED : ContractStatus.IN_PROGRESS;
+
+  return {
+    // Update the contract status based on the unpaid jobs
+    Update: {
+      TableName: process.env.TABLE_NAME!,
+      Key: {
+        PK: `Contract#${contract.id}`,
+        SK: `Contract#${contract.id}`,
+      },
+      UpdateExpression:
+        'SET #status = :status, sk1 = :sk1, sk2 = :sk2, ' +
+        'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
+      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND lastModifiedAt = :prevLastModifiedAt',
+      ExpressionAttributeNames: {
+        '#status': 'status',
+      },
+      ExpressionAttributeValues: {
+        ':status': status,
+        ':sk1': `Status#${status}`,
+        ':sk2': `Status#${status}`,
+        ':lastModifiedAt': currentTime.toISOString(),
+        ':lastModifiedBy': contract.clientId,
+        ':prevLastModifiedAt': contract.lastModifiedAt
+      },
+    },
+  };
+}
+
+export async function getContract(id: string): Promise<Contract> {
+  return (
+    await documentClient
+      .get({
+        TableName: process.env.TABLE_NAME!,
+        Key: {
+          PK: `Contract#${id}`,
+          SK: `Contract#${id}`,
+        },
+      })
+      .promise()
+  ).Item as Contract;
+}
+
 async function getJob(id: string) {
   return (
     await documentClient
@@ -171,4 +222,30 @@ async function getClientProfile(clientId: string) {
       })
       .promise()
   ).Item as Profile;
+}
+
+async function getContractJobs(jobIds: string[]): Promise<Job[]> {
+  const result = await documentClient
+    .batchGet({
+      RequestItems: {
+        [process.env.TABLE_NAME!]: {
+          Keys: jobIds.map(jobId => {
+            return { PK: `Job#${jobId}`, SK: `Job#${jobId}` };
+          }),
+        },
+      },
+    })
+    .promise();
+
+  let jobs = [];
+  if (
+    result.Responses &&
+    result.Responses[process.env.TABLE_NAME!].length > 0
+  ) {
+    for (const item of result.Responses[process.env.TABLE_NAME!]) {
+      jobs.push(item as Job);
+    }
+  }
+
+  return jobs;
 }
