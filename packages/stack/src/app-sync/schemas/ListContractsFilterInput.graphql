@@ -1,0 +1,3 @@
+input ListContractsFilterInput {
+  unterminated: Boolean
+}

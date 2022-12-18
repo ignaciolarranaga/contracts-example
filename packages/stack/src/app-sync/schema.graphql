@@ -185,6 +185,10 @@ type JobConnection @aws_cognito_user_pools {
   nextToken: String
 }
 
+input ListContractsFilterInput {
+  unterminated: Boolean
+}
+
 input ListJobsFilterInput {
   paid: Boolean
 }
@@ -224,7 +228,7 @@ enum ProfileType {
 type Query {
   bestProfession(input: BestProfessionInput): String
   getContract(id: ID!): Contract @aws_cognito_user_pools
-  listContracts(limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
+  listContracts(filter: ListContractsFilterInput, limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
   listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
   bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
   getProfile(id: ID!): Profile @aws_cognito_user_pools

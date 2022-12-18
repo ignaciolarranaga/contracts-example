@@ -52,6 +52,7 @@ mutation CreateSampleJobs {
     description
     clientId
     contractorId
+    contractId
     price
     paid
     paymentDate
@@ -66,6 +67,7 @@ mutation CreateSampleJobs {
     description
     clientId
     contractorId
+    contractId
     price
     paid
     paymentDate
@@ -83,7 +85,7 @@ mutation CreateSampleJobs {
 * Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {contractorId: "jane", jobIds: ["c3841675-8c30-4724-a4f8-83533d9323d7", "734a26e5-c5b4-4b2f-84de-e398252f138d"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["d6a701ad-f8e6-491c-b6e8-557fb9f5a022", "1acab9a9-0cb5-4841-9eb5-da69cf3993fd"], terms: "None"}) {
     id
     clientId
     contractorId
@@ -102,7 +104,7 @@ mutation CreateAContract {
 **Pre-requisite**: Login with john or jane.
 ```
 query ListContracts {
-  listContracts {
+  listContracts(filter: { unterminated: true }) {
     items {
       id
       clientId

@@ -18,8 +18,18 @@
 #else
       ":pk" : $util.dynamodb.toDynamoDBJson("Client#$ctx.identity.username"),
 #end
-      ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
-      ":max" : $util.dynamodb.toDynamoDBJson('Status#NEW')
+#if ($ctx.args.filter)
+  #if ($ctx.args.filter.unterminated)
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#NEW')
+  #else
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED')
+  #end
+#else
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED')
+#end
     }
   },
 #if ( !$util.isNullOrEmpty($ctx.args.nextToken) )

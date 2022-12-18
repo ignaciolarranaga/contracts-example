@@ -185,6 +185,10 @@ export type JobConnection = {
   nextToken?: Maybe<Scalars['String']>;
 };
 
+export type ListContractsFilterInput = {
+  unterminated?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type ListJobsFilterInput = {
   paid?: InputMaybe<Scalars['Boolean']>;
 };
@@ -282,6 +286,7 @@ export type QueryGetProfileArgs = {
 
 
 export type QueryListContractsArgs = {
+  filter?: InputMaybe<ListContractsFilterInput>;
   limit?: InputMaybe<Scalars['Int']>;
   nextToken?: InputMaybe<Scalars['String']>;
 };
