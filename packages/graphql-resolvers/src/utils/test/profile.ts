@@ -7,11 +7,28 @@ import {
   MutationCreateProfileArgs,
   MutationMakeProfileDepositArgs,
   Profile,
+  Query,
+  QueryGetProfileArgs,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 
 const CREATE_PROFILE_MUTATION = /* GraphQL */ `
   mutation CreateProfileForTest($input: CreateProfileInput!) {
     createProfile(input: $input) {
+      id
+      firstName
+      lastName
+      profession
+      type
+      balance
+      amountDue
+      maxDeposit
+    }
+  }
+`;
+
+const GET_PROFILE_QUERY = /* GraphQL */ `
+  query GetProfileForTest($id: ID!) {
+    getProfile(id: $id) {
       id
       firstName
       lastName
@@ -52,6 +69,20 @@ export async function createProfile(
     throw Error(`It was not possible to create the required profile ${input}`);
   } else {
     return rawResult.data.createProfile;
+  }
+}
+
+export async function getProfile(id: string): Promise<Profile> {
+  const rawResult = (await API.graphql({
+    query: GET_PROFILE_QUERY,
+    variables: { id } as QueryGetProfileArgs,
+    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+  })) as GraphQLResult<Query>;
+
+  if (!rawResult.data?.getProfile) {
+    throw Error(`It was not possible to retrieve the required profile ${id}`);
+  } else {
+    return rawResult.data.getProfile;
   }
 }
 

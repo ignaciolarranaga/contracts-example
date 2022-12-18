@@ -22,3 +22,7 @@ export async function loginWith(username: string, password: string) {
 
   return user;
 }
+
+export async function logout() {
+  await Auth.signOut();
+}
