@@ -120,7 +120,11 @@ function updateContractorBalanceTransactItem(currentTime: Date, job: Job) {
   };
 }
 
-function markJobAsPaidTransactItem(currentTime: Date, job: Job, contractor: Profile) {
+function markJobAsPaidTransactItem(
+  currentTime: Date,
+  job: Job,
+  contractor: Profile
+) {
   // Intentionally modifying the job so it can be returned
   job.paid = true;
   job.paymentDate = currentTime.toISOString();

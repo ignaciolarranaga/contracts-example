@@ -26,7 +26,7 @@ const resolvers: {
   },
   Query: {
     bestProfession,
-  }
+  },
 };
 
 /**

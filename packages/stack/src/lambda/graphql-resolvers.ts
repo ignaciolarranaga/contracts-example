@@ -82,7 +82,7 @@ function addPermissions(
       resources: [
         `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI1}`,
         `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI2}`,
-        `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI3}`
+        `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI3}`,
       ],
     })
   );
