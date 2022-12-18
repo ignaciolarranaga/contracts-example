@@ -5,6 +5,7 @@ import {
   Job,
   Mutation,
   MutationCreateJobArgs,
+  MutationPayJobArgs,
 } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 
 const CREATE_JOB_MUTATION = /* GraphQL */ `
@@ -13,8 +14,25 @@ const CREATE_JOB_MUTATION = /* GraphQL */ `
       id
       description
       contractorId
-      paid
       price
+      paid
+      paymentDate
+      createdBy
+      createdAt
+      lastModifiedBy
+      lastModifiedAt
+    }
+  }
+`;
+
+const PAY_JOB_MUTATION = /* GraphQL */ `
+  mutation PayJobForTest($id: ID!) {
+    payJob(id: $id) {
+      id
+      description
+      contractorId
+      price
+      paid
       paymentDate
       createdBy
       createdAt
@@ -35,5 +53,19 @@ export async function createJob(input: CreateJobInput): Promise<Job> {
     throw Error(`It was not possible to create the required job ${input}`);
   } else {
     return rawResult.data.createJob;
+  }
+}
+
+export async function payJob(id: string): Promise<Job> {
+  const rawResult = (await API.graphql({
+    query: PAY_JOB_MUTATION,
+    variables: { id } as MutationPayJobArgs,
+    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+  })) as GraphQLResult<Mutation>;
+
+  if (!rawResult.data?.payJob) {
+    throw Error(`It was not possible to pay the required job ${id}`);
+  } else {
+    return rawResult.data.payJob;
   }
 }

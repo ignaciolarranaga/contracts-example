@@ -36,8 +36,8 @@ mutation CreateSampleJobs {
     description
     clientId
     contractorId
-    paid
     price
+    paid
     paymentDate
     createdBy
     createdAt
@@ -50,8 +50,8 @@ mutation CreateSampleJobs {
     description
     clientId
     contractorId
-    paid
     price
+    paid
     paymentDate
     createdBy
     createdAt
@@ -130,8 +130,8 @@ query ListUnpaidJobs {
       id
       description
       clientId
-      paid
       price
+      paid
       paymentDate
       createdBy
       createdAt
@@ -166,8 +166,8 @@ mutation PayJob {
     description
     clientId
     contractorId
-    paid
     price
+    paid
     paymentDate
     createdBy
     createdAt
