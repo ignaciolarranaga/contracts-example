@@ -1,17 +1,25 @@
-import { Contract, Job, Profile, ProfileType } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import {
+  Contract,
+  Job,
+  ProfileType,
+} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { v4 as uuid } from 'uuid';
 
-import { init, loginWith, logout, SAMPLE_VALID_PASSWORD } from 'utils/test';
+import { init, loginWith, SAMPLE_VALID_PASSWORD } from 'utils/test';
 import { createContract } from 'utils/test/contract';
 import { createJob, payJob } from 'utils/test/job';
-import { createProfile, getProfile, makeProfileDeposit } from 'utils/test/profile';
+import {
+  createProfile,
+  getProfile,
+  makeProfileDeposit,
+} from 'utils/test/profile';
 
 init();
 
 async function createNewSampleContract(): Promise<{
-  sampleJob1: Job,
-  sampleJob2: Job,
-  sampleContract: Contract,
+  sampleJob1: Job;
+  sampleJob2: Job;
+  sampleContract: Contract;
 }> {
   // Arrange
   const sampleContractorProfile = await createProfile({
@@ -52,7 +60,8 @@ async function createNewSampleContract(): Promise<{
 describe('payJob', () => {
   it('must be able to pay a job when having funds', async () => {
     // Arrange
-    const { sampleJob1, sampleJob2, sampleContract } = await createNewSampleContract();
+    const { sampleJob1, sampleJob2, sampleContract } =
+      await createNewSampleContract();
     await makeProfileDeposit({ amount: sampleJob1.price });
 
     // Act
