@@ -44,18 +44,20 @@ export default async function makeProfileDeposit(
     job => !job.paid && job.id !== event.arguments.id
   );
 
-  const client = await getClientProfile(currentUser);
+  const client = await getProfile(currentUser);
   if (client.balance < job.price) {
     callback(errorCodes.NO_ENOUGH_BALANCE_TO_PAY_THE_JOB);
     return;
   }
+
+  const contractor = await getProfile(contract.contractorId);
 
   await documentClient
     .transactWrite({
       TransactItems: [
         updateClientBalanceTransactItem(currentTime, job, client),
         updateContractorBalanceTransactItem(currentTime, job),
-        markJobAsPaidTransactItem(currentTime, job),
+        markJobAsPaidTransactItem(currentTime, job, contractor),
         updateContractTransactItem(currentTime, contract, unpaidJobs),
       ],
     })
@@ -118,7 +120,7 @@ function updateContractorBalanceTransactItem(currentTime: Date, job: Job) {
   };
 }
 
-function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
+function markJobAsPaidTransactItem(currentTime: Date, job: Job, contractor: Profile) {
   // Intentionally modifying the job so it can be returned
   job.paid = true;
   job.paymentDate = currentTime.toISOString();
@@ -134,8 +136,8 @@ function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
         SK: `Job#${job.id}`,
       },
       UpdateExpression:
-        'SET SK1 = :sk1, SK2 = :sk2, ' +
-        'paid = :paid, paymentDate = :paymentDate, ' +
+        'SET SK1 = :sk1, SK2 = :sk2, PK3 = :pk3, SK3 = :sk3, ' +
+        'paid = :paid, paymentDate = :paymentDate, profession = :profession, ' +
         'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
       ConditionExpression:
         // Job exists
@@ -147,8 +149,11 @@ function markJobAsPaidTransactItem(currentTime: Date, job: Job) {
       ExpressionAttributeValues: {
         ':sk1': 'Paid#true',
         ':sk2': 'Paid#true',
+        ':pk3': 'Payment',
+        ':sk3': job.paymentDate,
         ':paid': job.paid,
         ':paymentDate': job.paymentDate,
+        ':profession': contractor.profession,
         ':clientId': job.clientId,
         ':nonPaid': false,
         ':lastModifiedAt': job.lastModifiedAt,
@@ -224,7 +229,7 @@ async function getJob(id: string) {
   ).Item as Job;
 }
 
-async function getClientProfile(clientId: string) {
+async function getProfile(clientId: string) {
   return (
     await documentClient
       .get({

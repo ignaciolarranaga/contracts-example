@@ -14,7 +14,6 @@ type Job implements Audited @aws_cognito_user_pools {
   lastModifiedBy: String!
 }
 
-
 ## Queries
 
 extend type Query {

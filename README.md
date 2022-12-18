@@ -88,11 +88,11 @@ Some Q&A:
 
 This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistence and particularly the [single-table design pattern](https://aws.amazon.com/es/blogs/compute/creating-a-single-table-design-with-amazon-dynamodb/).
 
-| Entity            | PK                 | SK                 | PK1                   | SK1             | PK2                   | SK2             |
-|-------------------|--------------------|--------------------|-----------------------|-----------------|-----------------------|-----------------|
-| Profile           | Profile#[USERNAME] | Profile#[USERNAME] |                       |                 |                       |                 |
-| Job               | Job#[ID]           | Job#[ID]           | Contractor#[USERNAME] | Paid#[PAID]     | Client#[USERNAME]     | Paid#[PAID]     |
-| Contract          | Contract#[ID]      | Contract#[ID]      | Contractor#[USERNAME] | Status#[STATUS] | Client#[USERNAME]     | Status#[STATUS] |
+| Entity   | PK                 | SK                 | PK1                   | SK1             | PK2               | SK2             | PK3     | SK3    |
+|----------|--------------------|--------------------|-----------------------|-----------------|-------------------|-----------------|---------|--------|
+| Profile  | Profile#[USERNAME] | Profile#[USERNAME] |                       |                 |                   |                 |         |        |
+| Job      | Job#[ID]           | Job#[ID]           | Contractor#[USERNAME] | Paid#[PAID]     | Client#[USERNAME] | Paid#[PAID]     | Payment | [DATE] |
+| Contract | Contract#[ID]      | Contract#[ID]      | Contractor#[USERNAME] | Status#[STATUS] | Client#[USERNAME] | Status#[STATUS] |         |        |
 
 ### Access Patterns
 
@@ -104,6 +104,8 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 * List Unpaid Jobs:
   * Non-Terminated Contracts for a Contractor: `PK1 = Contractor#[USERNAME] AND SK1 = Paid#false`
   * Non-Terminated Contracts for a Client: `PK2 = Client#[USERNAME] AND SK2 = Paid#false`
+* Best Profession: `PK3 = Payment AND SK3 BETWEEN start AND end`
+* Best Clients: `PK3 = Payment AND SK3 BETWEEN start AND end`
 
 ## HOW-TOs
 
