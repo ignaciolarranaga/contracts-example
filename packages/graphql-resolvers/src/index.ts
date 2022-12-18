@@ -5,6 +5,7 @@ import createContract from 'resolvers/createContract';
 import createJob from 'resolvers/createJob';
 import createProfile from 'resolvers/createProfile';
 import makeProfileDeposit from 'resolvers/makeProfileDeposit';
+import payJob from 'resolvers/payJob';
 
 const resolvers: {
   [type: string]: {
@@ -20,6 +21,7 @@ const resolvers: {
     createJob,
     createProfile,
     makeProfileDeposit,
+    payJob,
   },
 };
 

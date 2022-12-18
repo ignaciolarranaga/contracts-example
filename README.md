@@ -19,6 +19,7 @@ This is an example around 3 main entities and some business rules.
 
 ### Business Rules
 * **getContract(id: ID!)**: Returns the contract only if it belongs to the profile calling (either client or contractor). See the integration tests at [getContract.test.ts](packages/graphql-resolvers/src/resolvers/getContract.test.ts).
+* **payJob(id: ID!)**: Pay for a job, a client can only pay if his balance >= the amount to pay. The amount should be moved from the client's balance to the contractor balance.
 * **makeProfileDeposit(input: {amount: Float})**: Deposits money into the the the balance of a client, a client can't deposit more than 25% his total of jobs to pay (at the deposit moment). See the integration tests at [makeProfileDeposit.test.ts](packages/graphql-resolvers/src/resolvers/makeProfileDeposit.test.ts).
 
 You can find sample GraphQL operations around this model in [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md).

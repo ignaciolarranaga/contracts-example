@@ -167,6 +167,7 @@ export type CreateProfileInput = {
 export type Job = Audited & {
   __typename?: 'Job';
   clientId: Scalars['ID'];
+  contractId?: Maybe<Scalars['ID']>;
   contractorId?: Maybe<Scalars['ID']>;
   createdAt: Scalars['AWSDateTime'];
   createdBy: Scalars['String'];

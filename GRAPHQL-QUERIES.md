@@ -35,6 +35,7 @@ mutation CreateSampleJobs {
     id
     description
     clientId
+    contractorId
     paid
     price
     paymentDate
@@ -48,6 +49,7 @@ mutation CreateSampleJobs {
     id
     description
     clientId
+    contractorId
     paid
     price
     paymentDate
@@ -65,7 +67,7 @@ mutation CreateSampleJobs {
 * Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {contractorId: "jane", jobIds: ["b1a44ac9-1649-4636-a055-05396925453e", "6bb073d1-18da-4c24-bc58-59be9d29da35"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["a2483d2b-cd9f-4c74-a006-652704ae6a0d", "8636671d-6d34-4d0f-987f-6933fddd4c38"], terms: "None"}) {
     id
     clientId
     contractorId
@@ -144,13 +146,33 @@ query ListUnpaidJobs {
 **Pre-requisite**: Login with john.
 ```
 mutation MakeADeposit {
-  makeProfileDeposit(input: {amount: 100}) {
+  makeProfileDeposit(input: {amount: 2500}) {
     id
     firstName
     lastName
     profession
     type
     balance
+  }
+}
+```
+
+## Pay for a Job
+**Pre-requisite**: Login with john and made a deposit of almost 2000.
+```
+mutation PayJob {
+  payJob(id: "8636671d-6d34-4d0f-987f-6933fddd4c38") {
+    id
+    description
+    clientId
+    contractorId
+    paid
+    price
+    paymentDate
+    createdBy
+    createdAt
+    lastModifiedBy
+    lastModifiedAt
   }
 }
 ```

@@ -56,6 +56,7 @@ export default async function createProfile(
       TransactItems: [
         profileExistsAndItIsAContractorCheckCondition(item.contractorId),
         updateClientAmountDueAndMaxDepositTransactItem(
+          currentTime,
           item.clientId,
           amountDue,
           jobsTotal
@@ -63,9 +64,11 @@ export default async function createProfile(
         // TODO: Protect to not exceed the max number of operations
         ...event.arguments.input.jobIds.map(jobId =>
           updateJobClientContractorTransactItem(
+            currentTime,
             jobId,
             item.contractorId,
-            item.clientId
+            item.clientId,
+            id
           )
         ),
         insertNewContractTransactItem(item),
@@ -119,9 +122,11 @@ function prepareItem(
 }
 
 function updateJobClientContractorTransactItem(
+  currentTime: Date,
   jobId: string,
   contractorId: string,
-  clientId: string
+  clientId: string,
+  contractId: string
 ) {
   return {
     // Update the jobs so we know they are assigned
@@ -132,7 +137,9 @@ function updateJobClientContractorTransactItem(
         SK: `Job#${jobId}`,
       },
       UpdateExpression:
-        'set PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, contractorId = :contractorId',
+        'SET PK1 = :pk1, SK1 = :sk1, PK2 = :pk2, SK2 = :sk2, ' +
+        'contractorId = :contractorId, contractId = :contractId, ' +
+        'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
       // Job exists and belongs to the client
       ConditionExpression:
         'attribute_exists(PK) AND attribute_exists(SK) AND clientId = :clientId',
@@ -143,12 +150,16 @@ function updateJobClientContractorTransactItem(
         ':sk2': 'Paid#false',
         ':clientId': clientId,
         ':contractorId': contractorId,
+        ':contractId': contractId,
+        ':lastModifiedAt': currentTime.toISOString(),
+        ':lastModifiedBy': clientId,
       },
     },
   };
 }
 
 function updateClientAmountDueAndMaxDepositTransactItem(
+  currentTime: Date,
   clientId: string,
   amountDue: number,
   jobsTotal: number
@@ -161,7 +172,9 @@ function updateClientAmountDueAndMaxDepositTransactItem(
         PK: `Profile#${clientId}`,
         SK: `Profile#${clientId}`,
       },
-      UpdateExpression: 'SET amountDue = :amountDue, maxDeposit = :maxDeposit',
+      UpdateExpression:
+        'SET amountDue = :amountDue, maxDeposit = :maxDeposit, ' +
+        'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
       ConditionExpression:
         // The profile exists
         'attribute_exists(PK) AND attribute_exists(SK) AND ' +
@@ -180,6 +193,8 @@ function updateClientAmountDueAndMaxDepositTransactItem(
         // Adjusting the maximum deposit as per the business rule:
         // "a client can't deposit more than 25% his total of jobs to pay"
         ':maxDeposit': (amountDue + jobsTotal) / 4,
+        ':lastModifiedAt': currentTime.toISOString(),
+        ':lastModifiedBy': clientId,
       },
     },
   };

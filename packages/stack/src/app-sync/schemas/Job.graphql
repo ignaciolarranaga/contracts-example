@@ -2,6 +2,7 @@ type Job implements Audited @aws_cognito_user_pools {
   id: ID!
   clientId: ID! # Client requesting the job
   contractorId: ID # Once assigned the contractorId will be filled
+  contractId: ID # Once assigned to a contract will be filled
   description: String!
   price: Float!
   paid: Boolean!
@@ -60,5 +61,5 @@ extend type Query {
 type Mutation {
   createJob(input: CreateJobInput!): Job @aws_cognito_user_pools
 
-  payJob(id: ID!): Job
+  payJob(id: ID!): Job @aws_cognito_user_pools
 }

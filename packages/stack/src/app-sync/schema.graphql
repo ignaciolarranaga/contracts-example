@@ -170,6 +170,7 @@ type Job implements Audited @aws_cognito_user_pools {
   id: ID!
   clientId: ID!
   contractorId: ID
+  contractId: ID
   description: String!
   price: Float!
   paid: Boolean!
@@ -195,7 +196,7 @@ input MakeProfileDepositInput {
 
 type Mutation {
   createJob(input: CreateJobInput!): Job @aws_cognito_user_pools
-  payJob(id: ID!): Job
+  payJob(id: ID!): Job @aws_cognito_user_pools
   createContract(input: CreateContractInput!): Contract @aws_cognito_user_pools
   createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
   makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
