@@ -278,7 +278,7 @@ export type QueryGetContractArgs = {
 
 
 export type QueryGetProfileArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id: Scalars['ID'];
 };
 
 

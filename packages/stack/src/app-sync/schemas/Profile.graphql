@@ -37,7 +37,7 @@ input MakeProfileDepositInput {
 ## Mutations
 
 extend type Query {
-  getProfile(id: ID): Profile
+  getProfile(id: ID!): Profile @aws_cognito_user_pools
 }
 
 extend type Mutation {

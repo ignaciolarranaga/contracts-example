@@ -27,6 +27,22 @@ mutation CreateSampleProfiles {
 }
 ```
 
+## Get Profile
+**Pre-requisite**: Login with john.
+```
+query GetProfile {
+  getProfile(id: "john") {
+    id
+    firstName
+    lastName
+    profession
+    type
+    balance
+    amountDue
+  }
+}
+```
+
 ## Create Jobs
 **Pre-requisite**: Login with john.
 ```

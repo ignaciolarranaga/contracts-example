@@ -75,20 +75,21 @@ function prepareDynamoDbResolvers(dynamoDBTableDataSource: DynamoDbDataSource) {
     {
       typeName: 'Query',
       fieldName: 'getContract',
-      dataSource: dynamoDBTableDataSource,
     },
     {
       typeName: 'Query',
       fieldName: 'listContracts',
-      dataSource: dynamoDBTableDataSource,
+    },
+    {
+      typeName: 'Query',
+      fieldName: 'getProfile',
     },
     {
       typeName: 'Query',
       fieldName: 'listJobs',
-      dataSource: dynamoDBTableDataSource,
     },
   ]) {
-    operation.dataSource.createResolver({
+    dynamoDBTableDataSource.createResolver({
       typeName: operation.typeName,
       fieldName: operation.fieldName,
       requestMappingTemplate: MappingTemplate.fromFile(
