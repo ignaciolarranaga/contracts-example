@@ -1,0 +1,4 @@
+input BestClientsInput {
+  from: AWSDateTime
+  to: AWSDateTime
+}

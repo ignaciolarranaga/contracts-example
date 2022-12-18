@@ -1,0 +1,5 @@
+type BestClientsOutput {
+  id: ID!
+  fullName: String!
+  paid: Float!
+}

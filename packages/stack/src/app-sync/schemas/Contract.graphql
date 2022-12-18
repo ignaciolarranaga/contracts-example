@@ -1,9 +1,3 @@
-enum ContractStatus {
-  NEW
-  IN_PROGRESS
-  TERMINATED
-}
-
 type Contract implements Audited @aws_cognito_user_pools {
   id: ID!
   contractorId: ID!
@@ -16,22 +10,6 @@ type Contract implements Audited @aws_cognito_user_pools {
   lastModifiedAt: AWSDateTime!
   createdBy: String!
   lastModifiedBy: String!
-}
-
-## Inputs
-
-# A contract is created by a contractor with a client
-input CreateContractInput {
-  contractorId: ID!
-  jobIds: [ID!]!
-  terms: String!
-}
-
-## Connections
-
-type ContractConnection @aws_cognito_user_pools {
-  items: [Contract!]
-  nextToken: String
 }
 
 ## Queries

@@ -1,0 +1,8 @@
+input CreateProfileInput {
+  id: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  profession: String!
+  type: ProfileType!
+}

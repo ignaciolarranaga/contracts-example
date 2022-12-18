@@ -1,0 +1,4 @@
+type BestClientsOutputConnection {
+  items: [BestClientsOutput!]
+  nextToken: String
+}

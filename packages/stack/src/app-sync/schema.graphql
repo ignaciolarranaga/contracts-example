@@ -156,7 +156,6 @@ input CreateJobInput {
   price: Float!
 }
 
-"""# Inputs"""
 input CreateProfileInput {
   id: String!
   password: String!

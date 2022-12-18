@@ -1,8 +1,3 @@
-enum ProfileType {
-  CLIENT
-  CONTRACTOR
-}
-
 type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
   id: ID!
   firstName: String!
@@ -18,20 +13,6 @@ type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
   lastModifiedAt: AWSDateTime!
   createdBy: String
   lastModifiedBy: String
-}
-
-## Inputs
-input CreateProfileInput {
-  id: String!
-  password: String!
-  firstName: String!
-  lastName: String!
-  profession: String!
-  type: ProfileType!
-}
-
-input MakeProfileDepositInput {
-  amount: Float!
 }
 
 ## Mutations

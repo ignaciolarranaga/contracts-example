@@ -1,0 +1,6 @@
+# A contract is created by a contractor with a client
+input CreateContractInput {
+  contractorId: ID!
+  jobIds: [ID!]!
+  terms: String!
+}

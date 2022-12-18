@@ -154,7 +154,6 @@ export type CreateJobInput = {
   price: Scalars['Float'];
 };
 
-/** # Inputs */
 export type CreateProfileInput = {
   firstName: Scalars['String'];
   id: Scalars['String'];

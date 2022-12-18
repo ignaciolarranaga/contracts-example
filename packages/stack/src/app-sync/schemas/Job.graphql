@@ -14,39 +14,6 @@ type Job implements Audited @aws_cognito_user_pools {
   lastModifiedBy: String!
 }
 
-## Inputs / Outputs
-
-input CreateJobInput {
-  description: String!
-  price: Float!
-}
-
-input ListJobsFilterInput {
-  paid: Boolean
-}
-
-input BestClientsInput {
-  from: AWSDateTime
-  to: AWSDateTime
-}
-
-type BestClientsOutput {
-  id: ID!
-  fullName: String!
-  paid: Float!
-}
-
-## Connections
-
-type JobConnection @aws_cognito_user_pools {
-  items: [Job!]
-  nextToken: String
-}
-
-type BestClientsOutputConnection {
-  items: [BestClientsOutput!]
-  nextToken: String
-}
 
 ## Queries
 
