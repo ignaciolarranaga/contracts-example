@@ -35,7 +35,7 @@ async function createNewSampleContract(): Promise<{
     description: 'Sample description',
     price: 8000,
   });
-  const sampleContract = await createContract({
+  await createContract({
     contractorId: sampleContractorProfile.id,
     jobIds: [sampleJob.id],
     terms: 'Sample terms',

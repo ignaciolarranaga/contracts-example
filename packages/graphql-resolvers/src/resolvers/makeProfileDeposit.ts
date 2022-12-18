@@ -34,28 +34,13 @@ export default async function makeProfileDeposit(
 
   try {
     const result = await documentClient
-      .update({
-        TableName: process.env.TABLE_NAME!,
-        Key: {
-          PK: `Profile#${currentUser}`,
-          SK: `Profile#${currentUser}`,
-        },
-        UpdateExpression:
-          'SET balance = balance + :amount, lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
-        // Profile exists, it is a client and the deposit is of at most 25% of the amountDue
-        ConditionExpression:
-          'attribute_exists(PK) AND attribute_exists(SK) AND #type = :clientType AND :amount <= maxDeposit',
-        ExpressionAttributeNames: {
-          '#type': 'type',
-        },
-        ExpressionAttributeValues: {
-          ':clientType': ProfileType.CLIENT,
-          ':amount': event.arguments.input.amount,
-          ':lastModifiedAt': currentTime.toISOString(),
-          ':lastModifiedBy': currentUser,
-        },
-        ReturnValues: 'ALL_NEW',
-      })
+      .update(
+        updateProfileForTheDepositTransactItem(
+          currentTime,
+          currentUser,
+          event.arguments.input.amount
+        )
+      )
       .promise();
 
     return result.Attributes;
@@ -82,6 +67,35 @@ export default async function makeProfileDeposit(
       throw error;
     }
   }
+}
+
+function updateProfileForTheDepositTransactItem(
+  currentTime: Date,
+  currentUser: string,
+  amount: number
+) {
+  return {
+    TableName: process.env.TABLE_NAME!,
+    Key: {
+      PK: `Profile#${currentUser}`,
+      SK: `Profile#${currentUser}`,
+    },
+    UpdateExpression:
+      'SET balance = balance + :amount, lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
+    // Profile exists, it is a client and the deposit is of at most 25% of the amountDue
+    ConditionExpression:
+      'attribute_exists(PK) AND attribute_exists(SK) AND #type = :clientType AND :amount <= maxDeposit',
+    ExpressionAttributeNames: {
+      '#type': 'type',
+    },
+    ExpressionAttributeValues: {
+      ':clientType': ProfileType.CLIENT,
+      ':amount': amount,
+      ':lastModifiedAt': currentTime.toISOString(),
+      ':lastModifiedBy': currentUser,
+    },
+    ReturnValues: 'ALL_NEW',
+  };
 }
 
 async function getProfile(clientId: string) {
