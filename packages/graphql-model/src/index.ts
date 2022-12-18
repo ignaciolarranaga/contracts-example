@@ -93,7 +93,7 @@ export type Audited = {
   lastModifiedBy?: Maybe<Scalars['String']>;
 };
 
-export type BestClientsInput = {
+export type BestClientsFilterInput = {
   from?: InputMaybe<Scalars['AWSDateTime']>;
   to?: InputMaybe<Scalars['AWSDateTime']>;
 };
@@ -111,7 +111,7 @@ export type BestClientsOutputConnection = {
   nextToken?: Maybe<Scalars['String']>;
 };
 
-export type BestProfessionInput = {
+export type BestProfessionFilterInput = {
   end?: InputMaybe<Scalars['AWSDateTime']>;
   start?: InputMaybe<Scalars['AWSDateTime']>;
 };
@@ -166,6 +166,7 @@ export type CreateProfileInput = {
 export type Job = Audited & {
   __typename?: 'Job';
   clientId: Scalars['ID'];
+  /** Once assigned to a contractor the following will be filled */
   contractId?: Maybe<Scalars['ID']>;
   contractorId?: Maybe<Scalars['ID']>;
   createdAt: Scalars['AWSDateTime'];
@@ -177,6 +178,7 @@ export type Job = Audited & {
   paid: Scalars['Boolean'];
   paymentDate?: Maybe<Scalars['AWSDateTime']>;
   price: Scalars['Float'];
+  profession?: Maybe<Scalars['String']>;
 };
 
 export type JobConnection = {
@@ -264,14 +266,14 @@ export type Query = {
 
 
 export type QueryBestClientsArgs = {
-  input?: InputMaybe<BestClientsInput>;
+  input?: InputMaybe<BestClientsFilterInput>;
   limit?: InputMaybe<Scalars['Int']>;
   nextToken?: InputMaybe<Scalars['String']>;
 };
 
 
 export type QueryBestProfessionArgs = {
-  input?: InputMaybe<BestProfessionInput>;
+  filter?: InputMaybe<BestProfessionFilterInput>;
 };
 
 

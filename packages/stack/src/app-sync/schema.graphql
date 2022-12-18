@@ -99,7 +99,7 @@ considered invalid. URLs which contain double slashes are also considered invali
 """
 scalar AWSURL
 
-input BestClientsInput {
+input BestClientsFilterInput {
   from: AWSDateTime
   to: AWSDateTime
 }
@@ -115,7 +115,7 @@ type BestClientsOutputConnection {
   nextToken: String
 }
 
-input BestProfessionInput {
+input BestProfessionFilterInput {
   start: AWSDateTime
   end: AWSDateTime
 }
@@ -168,12 +168,15 @@ input CreateProfileInput {
 type Job implements Audited @aws_cognito_user_pools {
   id: ID!
   clientId: ID!
-  contractorId: ID
-  contractId: ID
   description: String!
   price: Float!
   paid: Boolean!
   paymentDate: AWSDateTime
+
+  """Once assigned to a contractor the following will be filled"""
+  contractId: ID
+  contractorId: ID
+  profession: String
   createdAt: AWSDateTime!
   lastModifiedAt: AWSDateTime!
   createdBy: String!
@@ -226,10 +229,10 @@ enum ProfileType {
 }
 
 type Query {
-  bestProfession(input: BestProfessionInput): String
+  bestProfession(filter: BestProfessionFilterInput): String
+  bestClients(input: BestClientsFilterInput, limit: Int, nextToken: String): BestClientsOutputConnection
   getContract(id: ID!): Contract @aws_cognito_user_pools
   listContracts(filter: ListContractsFilterInput, limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
   listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
-  bestClients(input: BestClientsInput, limit: Int, nextToken: String): BestClientsOutputConnection
   getProfile(id: ID!): Profile @aws_cognito_user_pools
 }

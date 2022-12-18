@@ -109,6 +109,7 @@ function prepareLambdaResolvers(resolversDataSource: LambdaDataSource) {
     { typeName: 'Mutation', fieldName: 'createProfile' },
     { typeName: 'Mutation', fieldName: 'makeProfileDeposit' },
     { typeName: 'Mutation', fieldName: 'payJob' },
+    { typeName: 'Query', fieldName: 'bestProfession' },
   ]) {
     resolversDataSource.createResolver({
       ...operation,

@@ -7,4 +7,6 @@ export interface DynamoDBItem {
   SK1?: string;
   PK2?: string;
   SK2?: string;
+  PK3?: string;
+  SK3?: string;
 }

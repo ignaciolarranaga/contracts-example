@@ -1,4 +1,4 @@
-input BestProfessionInput {
+input BestProfessionFilterInput {
   start: AWSDateTime
   end: AWSDateTime
 }

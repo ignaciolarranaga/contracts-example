@@ -5,7 +5,7 @@ The following is a list of sample graphql queries that you can use
 ## Create Sample Profiles
 ```
 mutation CreateSampleProfiles {
-  contractor: createProfile(input: {firstName: "John", lastName: "Doe", profession: "Project Manager", type: CLIENT, id: "john", password: "-TestUser1"}) {
+  client: createProfile(input: {firstName: "John", lastName: "Doe", profession: "Business Manager", type: CLIENT, id: "john", password: "-TestUser1"}) {
     id
     firstName
     lastName
@@ -15,7 +15,27 @@ mutation CreateSampleProfiles {
     amountDue
   }
 
-  client: createProfile(input: {firstName: "Jane", lastName: "Doe", profession: "Engineer", type: CONTRACTOR, id: "jane", password: "-TestUser1"}) {
+  contractor1: createProfile(input: {firstName: "Jane", lastName: "Doe", profession: "Software Engineer", type: CONTRACTOR, id: "jane", password: "-TestUser1"}) {
+    id
+    firstName
+    lastName
+    profession
+    type
+    balance
+    amountDue
+  }
+
+  contractor2: createProfile(input: {firstName: "Jess", lastName: "Doe", profession: "Tester", type: CONTRACTOR, id: "jess", password: "-TestUser1"}) {
+    id
+    firstName
+    lastName
+    profession
+    type
+    balance
+    amountDue
+  }
+
+  contractor3: createProfile(input: {firstName: "Jennifer", lastName: "Doe", profession: "Project Manager", type: CONTRACTOR, id: "jennifer", password: "-TestUser1"}) {
     id
     firstName
     lastName
@@ -85,7 +105,7 @@ mutation CreateSampleJobs {
 * Adjust the jobIds below to match the ones you just created.
 ```
 mutation CreateAContract {
-  createContract(input: {contractorId: "jane", jobIds: ["d6a701ad-f8e6-491c-b6e8-557fb9f5a022", "1acab9a9-0cb5-4841-9eb5-da69cf3993fd"], terms: "None"}) {
+  createContract(input: {contractorId: "jane", jobIds: ["cf046741-f176-4b14-8407-26a73f9aa622", "8e90f8c1-06fb-43f3-bc54-b6907466ec8c"], terms: "None"}) {
     id
     clientId
     contractorId
@@ -181,7 +201,7 @@ mutation MakeADeposit {
 * Adjust the jobId below to match the priced on 2000.
 ```
 mutation PayJob {
-  payJob(id: "c3841675-8c30-4724-a4f8-83533d9323d7") {
+  payJob(id: "9fc0146f-6c53-490e-8707-03d9be0f0b1a") {
     id
     description
     clientId
@@ -194,5 +214,13 @@ mutation PayJob {
     lastModifiedBy
     lastModifiedAt
   }
+}
+```
+
+## Get best profession
+**Pre-requisite**: You need to be using the API KEY
+```
+query GetBestProfession {
+  bestProfession
 }
 ```

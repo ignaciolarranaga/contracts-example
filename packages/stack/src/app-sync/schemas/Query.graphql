@@ -1,3 +1,4 @@
 type Query {
-  bestProfession(input: BestProfessionInput): String
+  bestProfession(filter: BestProfessionFilterInput): String
+  bestClients(input: BestClientsFilterInput, limit: Int, nextToken: String): BestClientsOutputConnection
 }

@@ -11,6 +11,7 @@ import { UserPool, UserPoolClient } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 
 import { Environment } from '../Environment';
+import { DynamoDBIndexes } from '../dynamodb';
 
 export function buildGraphQLResolversLambda(
   scope: Construct,
@@ -72,6 +73,17 @@ function addPermissions(
         'dynamodb:GetItem',
       ],
       resources: [dynamoDBTable.tableArn],
+    })
+  );
+
+  lambda.addToRolePolicy(
+    new PolicyStatement({
+      actions: ['dynamodb:Query'],
+      resources: [
+        `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI1}`,
+        `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI2}`,
+        `${dynamoDBTable.tableArn}/index/${DynamoDBIndexes.GSI3}`
+      ],
     })
   );
 }
