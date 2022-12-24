@@ -5,17 +5,17 @@ This is an example around 3 main entities and some business rules.
 ### Entities
 * Profile:
   * A profile can be either a `client` or a `contractor`.
-  * clients create contracts with contractors. contractor does jobs for clients and get paid.
+  * The clients create contracts with contractors. Contractors do jobs for clients and get paid by them.
   * Each profile has a balance property.
 
 * Contract:
   * A contract between and client and a contractor.
-  * Contracts have 3 statuses: `new`, `in_progress`, `terminated`.
-  * contracts are considered active only when in status `in_progress`
+  * Contracts have 3 statuses: `NEW`, `IN_PROGRESS`, `TERMINATED`.
+  * contracts are considered active only when in status `IN_PROGRESS`
   * Contracts group jobs within them.
 
 * Job
-  * contractor get paid for jobs by clients under a certain contract.
+  * A contractor gets paid for jobs by clients under a certain contract.
 
 ### Business Rules
 * **getContract(id: ID!)**: Returns the contract only if it belongs to the profile calling (either client or contractor). See the integration tests at [getContract.test.ts](packages/graphql-resolvers/src/resolvers/getContract.test.ts).
@@ -24,14 +24,15 @@ This is an example around 3 main entities and some business rules.
 * **listJobs(filter: { paid: Boolean }, limit: Int, nextToken: String)**: Get all paid/unpaid jobs for a user.
 * **listContracts(filter: { unterminated: Boolean }, limit: Int, nextToken: String)**: Get all or terminated/unterminated contracts for a user.
 * **bestProfession(filter: { start: Date, end: Date })**: Returns the profession that earned the most money (sum of jobs paid) for any contactor that worked in the query time range.
+* **bestClients(filter: { start: Date, end: Date }, limit: Int)**: Returns the clients the paid the most for jobs in the query time period. Limit query parameter should be applied, default limit is 2
 
-You can find sample GraphQL operations around this model in [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md).
+You can find a complete end to end user story in (this project wiki)[https://github.com/ignaciolarranaga/contracts-example/wiki].
 
 ## Getting Started
 
 You have 2 ways to start developing:
 
-1. Using Gitpod, or doing a local setup manually as described in the how-tos.
+1. Using Gitpod, or doing a local setup manually as described in the HOW-TOs below.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#git@github.com:ignaciolarranaga/contracts-example.git)
 
@@ -44,13 +45,19 @@ export AWS_DEFAULT_REGION=us-west-2
 
 3. If it is the first time you use AWS CDK you will need to [bootstrap it](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap) (i.e. `cdk bootstrap aws://ACCOUNT-NUMBER/REGION`).
 
-4. Now you have to deploy the stack: `npm run deploy`
+4. Next we need to bootstrap the project (i.e. download the dependencies): `npm run bootstrap`
+
+5. Next build: `npm run build`
+
+6. Now you have to deploy the stack: `npm run deploy`
+
+7. Finally you can access your AppSync Console in order to exercise the API (e.g.: https://us-east-1.console.aws.amazon.com/appsync/home?region=us-east-1#/apis)
 
 Notes:
-* This project uses [Lerna](https://lerna.js.org/) for the building of the monorepo.
+* This project uses [Lerna](https://lerna.js.org/) for building the monorepo.
 * We do not rebuild the code on deploy to improve the performance of the development workflow, so remember to run `npm run build && npm run deploy`.
 * We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging.
-* There are useful GraphQL queries on [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md)
+* There are useful GraphQL queries on the project wiki.
 
 ## Testing
 
