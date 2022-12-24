@@ -100,6 +100,10 @@ This project mainly uses:
   * A: Because the implementation will self-scale rather than us having to setup and manage a cluster
 * Q: **Why we choose GraphQL instead of REST?**
   * A: Because facilitates the implementation of the clients by leaving them to define how to use the API as well as the type system expressiveness value added
+* Q: **Why not including an UI?**
+  * A: I can totally do it, not included due time constraints and because the AWS AppSync GraphQL console is very effective to showcase the system.
+* Q: **Are all the tests included?**
+  * A: Nop just a few, again because of time constraints.
 
 ## Entities
 
