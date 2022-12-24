@@ -45,11 +45,18 @@ export default async function bestClients(
       (clientTotals[job.clientId] ? clientTotals[job.clientId] : 0) + job.price;
   }
 
-  return {
-    items: Object.entries(clientTotals).map(total => {
+  const result = Object
+    .entries(clientTotals)
+    .map(total => {
       const id = total[0];
       const paid = total[1];
       return { id, fullName: clientNames[id], paid }
     })
+    .sort((a, b) => b.paid - a.paid); // Descendant
+  const limit = event.arguments.limit && event.arguments.limit > 0 ? event.arguments.limit : undefined;
+  const items = result.slice(0, limit);
+
+  return {
+    items
   };
 }

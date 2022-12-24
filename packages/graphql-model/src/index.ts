@@ -108,7 +108,6 @@ export type BestClientsOutput = {
 export type BestClientsOutputConnection = {
   __typename?: 'BestClientsOutputConnection';
   items?: Maybe<Array<BestClientsOutput>>;
-  nextToken?: Maybe<Scalars['String']>;
 };
 
 export type BestProfessionFilterInput = {
@@ -268,7 +267,6 @@ export type Query = {
 export type QueryBestClientsArgs = {
   filter?: InputMaybe<BestClientsFilterInput>;
   limit?: InputMaybe<Scalars['Int']>;
-  nextToken?: InputMaybe<Scalars['String']>;
 };
 
 

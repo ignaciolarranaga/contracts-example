@@ -112,7 +112,6 @@ type BestClientsOutput @aws_api_key @aws_cognito_user_pools {
 
 type BestClientsOutputConnection @aws_api_key @aws_cognito_user_pools {
   items: [BestClientsOutput!]
-  nextToken: String
 }
 
 input BestProfessionFilterInput {
@@ -230,7 +229,7 @@ enum ProfileType {
 
 type Query {
   bestProfession(filter: BestProfessionFilterInput): String @aws_api_key @aws_cognito_user_pools
-  bestClients(filter: BestClientsFilterInput, limit: Int, nextToken: String): BestClientsOutputConnection @aws_api_key @aws_cognito_user_pools
+  bestClients(filter: BestClientsFilterInput, limit: Int): BestClientsOutputConnection @aws_api_key @aws_cognito_user_pools
   getContract(id: ID!): Contract @aws_cognito_user_pools
   listContracts(filter: ListContractsFilterInput, limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
   listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
