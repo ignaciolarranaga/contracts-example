@@ -1,6 +1,10 @@
 import { AppSyncResolverEvent } from 'aws-lambda';
 import AWS from 'aws-sdk';
-import { BestClientsOutputConnection, Job, QueryBestClientsArgs } from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
+import {
+  BestClientsOutputConnection,
+  Job,
+  QueryBestClientsArgs,
+} from '@ignaciolarranaga/graphql-model'; // cspell:disable-line
 import { JobDynamoDBItem } from 'utils/JobDynamoDBItem';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -37,7 +41,7 @@ export default async function bestClients(
       .promise()
   ).Items as (Job & JobDynamoDBItem)[];
 
-  const clientNames : { [id: string]: string } = {};
+  const clientNames: { [id: string]: string } = {};
   const clientTotals: { [id: string]: number } = {};
   for (const job of paidJobs) {
     clientNames[job.clientId] = job.clientFullName!;
@@ -45,18 +49,20 @@ export default async function bestClients(
       (clientTotals[job.clientId] ? clientTotals[job.clientId] : 0) + job.price;
   }
 
-  const result = Object
-    .entries(clientTotals)
+  const result = Object.entries(clientTotals)
     .map(total => {
       const id = total[0];
       const paid = total[1];
-      return { id, fullName: clientNames[id], paid }
+      return { id, fullName: clientNames[id], paid };
     })
     .sort((a, b) => b.paid - a.paid); // Descendant
-  const limit = event.arguments.limit && event.arguments.limit > 0 ? event.arguments.limit : undefined;
+  const limit =
+    event.arguments.limit && event.arguments.limit > 0
+      ? event.arguments.limit
+      : undefined;
   const items = result.slice(0, limit);
 
   return {
-    items
+    items,
   };
 }
