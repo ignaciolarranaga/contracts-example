@@ -57,7 +57,7 @@ export default async function makeProfileDeposit(
       TransactItems: [
         updateClientBalanceTransactItem(currentTime, job, client),
         updateContractorBalanceTransactItem(currentTime, job),
-        markJobAsPaidTransactItem(currentTime, job, contractor),
+        markJobAsPaidTransactItem(currentTime, job, contractor, client),
         updateContractTransactItem(currentTime, contract, unpaidJobs),
       ],
     })
@@ -123,7 +123,8 @@ function updateContractorBalanceTransactItem(currentTime: Date, job: Job) {
 function markJobAsPaidTransactItem(
   currentTime: Date,
   job: Job,
-  contractor: Profile
+  contractor: Profile,
+  client: Profile
 ) {
   // Intentionally modifying the job so it can be returned
   job.paid = true;
@@ -142,6 +143,7 @@ function markJobAsPaidTransactItem(
       UpdateExpression:
         'SET SK1 = :sk1, SK2 = :sk2, PK3 = :pk3, SK3 = :sk3, ' +
         'paid = :paid, paymentDate = :paymentDate, profession = :profession, ' +
+        'clientFullName = :clientFullName, ' +
         'lastModifiedAt = :lastModifiedAt, lastModifiedBy = :lastModifiedBy',
       ConditionExpression:
         // Job exists
@@ -159,6 +161,7 @@ function markJobAsPaidTransactItem(
         ':paymentDate': job.paymentDate,
         ':profession': contractor.profession,
         ':clientId': job.clientId,
+        ':clientFullName': `${client.firstName} ${client.lastName}`,
         ':nonPaid': false,
         ':lastModifiedAt': job.lastModifiedAt,
         ':lastModifiedBy': job.lastModifiedBy,

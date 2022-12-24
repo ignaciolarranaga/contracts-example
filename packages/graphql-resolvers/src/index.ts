@@ -1,6 +1,7 @@
 import { AppSyncResolverEvent, Context, Callback } from 'aws-lambda';
 
 import errorCodes from 'error-codes';
+import bestClients from 'resolvers/bestClients';
 import bestProfession from 'resolvers/bestProfession';
 import createContract from 'resolvers/createContract';
 import createJob from 'resolvers/createJob';
@@ -25,6 +26,7 @@ const resolvers: {
     payJob,
   },
   Query: {
+    bestClients,
     bestProfession,
   },
 };

@@ -221,6 +221,20 @@ mutation PayJob {
 **Pre-requisite**: You need to be using the API KEY
 ```
 query GetBestProfession {
-  bestProfession
+  bestProfession(filter: {
+    start: "2022-01-01T00:00:00.000Z",
+    end:"2022-12-31T23:59:59.999Z"
+  })
+}
+```
+
+## Get best profession
+**Pre-requisite**: You need to be using the API KEY
+```
+query GetBestClients {
+  bestClients(filter: {
+    start: "2022-01-01T00:00:00.000Z",
+    end:"2022-12-31T23:59:59.999Z"
+  })
 }
 ```

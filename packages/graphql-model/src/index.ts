@@ -94,8 +94,8 @@ export type Audited = {
 };
 
 export type BestClientsFilterInput = {
-  from?: InputMaybe<Scalars['AWSDateTime']>;
-  to?: InputMaybe<Scalars['AWSDateTime']>;
+  end?: InputMaybe<Scalars['AWSDateTime']>;
+  start?: InputMaybe<Scalars['AWSDateTime']>;
 };
 
 export type BestClientsOutput = {
@@ -266,7 +266,7 @@ export type Query = {
 
 
 export type QueryBestClientsArgs = {
-  input?: InputMaybe<BestClientsFilterInput>;
+  filter?: InputMaybe<BestClientsFilterInput>;
   limit?: InputMaybe<Scalars['Int']>;
   nextToken?: InputMaybe<Scalars['String']>;
 };

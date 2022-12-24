@@ -1,4 +1,4 @@
 input BestClientsFilterInput {
-  from: AWSDateTime
-  to: AWSDateTime
+  start: AWSDateTime
+  end: AWSDateTime
 }
