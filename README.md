@@ -135,7 +135,7 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 
 ### Regenerate the GraphQL Schema
 
-The schema is generated from different independent schema files split by type (i.e. Profile.graphql, Contract.graphql, etc.).
+The schema is generated from different independent schema files split by type (i.e. [Profile.graphql](packages/stack/src/app-sync/schemas/Profile.graphql), [Contract.graphql](packages/stack/src/app-sync/schemas/Contract.graphql), etc.).
 To generate the combined schema file we use [graphql-schema-utilities](https://github.com/awslabs/graphql-schema-utilities) and
 specifically a script named regenerate-graphql-schema so execute `npm run regenerate-graphql-schema` in order to regenerate
 [schema.graphql](src/app-sync/schema.graphql)
