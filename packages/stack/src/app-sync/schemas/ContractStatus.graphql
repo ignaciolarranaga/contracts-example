@@ -1,0 +1,5 @@
+enum ContractStatus {
+  NEW
+  IN_PROGRESS
+  TERMINATED
+}

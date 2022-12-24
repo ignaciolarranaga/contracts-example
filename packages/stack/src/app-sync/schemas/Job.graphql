@@ -1,0 +1,32 @@
+type Job implements Audited @aws_cognito_user_pools {
+  id: ID!
+  clientId: ID! # Client requesting the job
+  description: String!
+  price: Float!
+  paid: Boolean!
+  paymentDate: AWSDateTime
+
+  # Once assigned to a contractor the following will be filled
+  contractId: ID
+  contractorId: ID
+  profession: String
+
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String!
+  lastModifiedBy: String!
+}
+
+## Queries
+
+extend type Query {
+  listJobs(filter: ListJobsFilterInput, limit: Int, nextToken: String): JobConnection @aws_cognito_user_pools
+}
+
+## Mutations
+
+type Mutation {
+  createJob(input: CreateJobInput!): Job @aws_cognito_user_pools
+
+  payJob(id: ID!): Job @aws_cognito_user_pools
+}

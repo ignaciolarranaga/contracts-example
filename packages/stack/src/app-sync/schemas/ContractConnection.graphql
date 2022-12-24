@@ -1,0 +1,4 @@
+type ContractConnection @aws_cognito_user_pools {
+  items: [Contract!]
+  nextToken: String
+}

@@ -1,0 +1,4 @@
+input CreateJobInput {
+  description: String!
+  price: Float!
+}

@@ -1,0 +1,5 @@
+type BestClientsOutput @aws_api_key @aws_cognito_user_pools {
+  id: ID!
+  fullName: String!
+  paid: Float!
+}

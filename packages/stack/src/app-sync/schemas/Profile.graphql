@@ -1,0 +1,28 @@
+type Profile implements Audited @aws_api_key @aws_cognito_user_pools {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  profession: String!
+  balance: Float!
+  type: ProfileType!
+
+  amountDue: Float!
+  maxDeposit: Float!
+
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String
+  lastModifiedBy: String
+}
+
+## Mutations
+
+extend type Query {
+  getProfile(id: ID!): Profile @aws_cognito_user_pools
+}
+
+extend type Mutation {
+  createProfile(input: CreateProfileInput!): Profile @aws_api_key @aws_cognito_user_pools
+
+  makeProfileDeposit(input: MakeProfileDepositInput!): Profile @aws_cognito_user_pools
+}

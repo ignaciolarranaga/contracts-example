@@ -1,0 +1,42 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "Query",
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+  "index": "GSI1",
+#else
+  "index": "GSI2",
+#end
+  "query" : {
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+    "expression" : "PK1 = :pk AND SK1 BETWEEN :min AND :max",
+#else
+    "expression" : "PK2 = :pk AND SK2 BETWEEN :min AND :max",
+#end
+    "expressionValues": {
+#if ($ctx.identity.groups.get(0) == "CONTRACTOR")
+      ":pk" : $util.dynamodb.toDynamoDBJson("Contractor#$ctx.identity.username"),
+#else
+      ":pk" : $util.dynamodb.toDynamoDBJson("Client#$ctx.identity.username"),
+#end
+#if ($ctx.args.filter)
+  #if ($ctx.args.filter.unterminated)
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#NEW')
+  #else
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED')
+  #end
+#else
+        ":min" : $util.dynamodb.toDynamoDBJson('Status#IN_PROGRESS'),
+        ":max" : $util.dynamodb.toDynamoDBJson('Status#TERMINATED')
+#end
+    }
+  },
+#if ( !$util.isNullOrEmpty($ctx.args.nextToken) )
+  "nextToken" : $util.toJson($ctx.args.nextToken),
+#end
+#if ( !$util.isNullOrEmpty($ctx.args.limit) )
+  "limit" : $util.toJson($ctx.args.limit),
+#end
+  "consistentRead" : false,
+}

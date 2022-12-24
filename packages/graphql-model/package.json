@@ -1,0 +1,27 @@
+{
+  "name": "@ignaciolarranaga/graphql-model",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The GraphQL model associated to the API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "regenerate-graphql-schema-types": "graphql-codegen --config codegen.yml"
+  },
+  "keywords": [
+    "graphql"
+  ],
+  "files": [
+    "package.json",
+    "dist/index.js",
+    "dist/index.d.ts"
+  ],
+  "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.14.1",
+    "@graphql-codegen/typescript": "2.8.2",
+    "@types/node": "^18.11.9",
+    "typescript": "^4.9.3"
+  }
+}

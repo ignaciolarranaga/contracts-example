@@ -1,0 +1,4 @@
+type JobConnection @aws_cognito_user_pools {
+  items: [Job!]
+  nextToken: String
+}

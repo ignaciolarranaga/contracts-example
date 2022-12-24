@@ -1,0 +1,13 @@
+{
+  "name": "@ignaciolarranaga/graphql-resolvers-libraries",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Ignacio Larrañaga <ignaciolarranaga@gmail.com>",
+  "dependencies": {
+    "@ignaciolarranaga/graphql-model": "^1.0.0",
+    "uuid": "^9.0.0"
+  }
+}

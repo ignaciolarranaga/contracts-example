@@ -1,0 +1,9 @@
+overwrite: true
+schema: "../stack/src/app-sync/schema.graphql"
+generates:
+  src/index.ts:
+    plugins:
+      - "typescript"
+    config:
+      namingConvention:
+        enumValues: change-case-all#constantCase

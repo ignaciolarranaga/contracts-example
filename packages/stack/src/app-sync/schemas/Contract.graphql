@@ -1,0 +1,26 @@
+type Contract implements Audited @aws_cognito_user_pools {
+  id: ID!
+  contractorId: ID!
+  clientId: ID!
+  jobIds: [ID!]!
+  terms: String!
+  status: ContractStatus!
+
+  createdAt: AWSDateTime!
+  lastModifiedAt: AWSDateTime!
+  createdBy: String!
+  lastModifiedBy: String!
+}
+
+## Queries
+
+extend type Query {
+  getContract(id: ID!): Contract @aws_cognito_user_pools
+  listContracts(filter: ListContractsFilterInput, limit: Int, nextToken: String): ContractConnection @aws_cognito_user_pools
+}
+
+## Mutations
+
+extend type Mutation {
+  createContract(input: CreateContractInput!): Contract @aws_cognito_user_pools
+}

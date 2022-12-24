@@ -1,0 +1,4 @@
+type Query {
+  bestProfession(filter: BestProfessionFilterInput): String @aws_api_key @aws_cognito_user_pools
+  bestClients(filter: BestClientsFilterInput, limit: Int): BestClientsOutputConnection @aws_api_key @aws_cognito_user_pools
+}

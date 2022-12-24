@@ -1,0 +1,9 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Prepare environment
+    init: |
+      npm install
+      npm run bootstrap
+      npm run build
