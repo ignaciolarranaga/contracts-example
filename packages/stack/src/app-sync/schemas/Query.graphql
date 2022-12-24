@@ -1,4 +1,4 @@
 type Query {
-  bestProfession(filter: BestProfessionFilterInput): String
-  bestClients(filter: BestClientsFilterInput, limit: Int, nextToken: String): BestClientsOutputConnection
+  bestProfession(filter: BestProfessionFilterInput): String @aws_api_key @aws_cognito_user_pools
+  bestClients(filter: BestClientsFilterInput, limit: Int, nextToken: String): BestClientsOutputConnection @aws_api_key @aws_cognito_user_pools
 }
