@@ -26,7 +26,7 @@ This is an example around 3 main entities and some business rules.
 * **bestProfession(filter: { start: Date, end: Date })**: Returns the profession that earned the most money (sum of jobs paid) for any contactor that worked in the query time range.
 * **bestClients(filter: { start: Date, end: Date }, limit: Int)**: Returns the clients the paid the most for jobs in the query time period. Limit query parameter should be applied, default limit is 2
 
-You can find a complete end to end user story in [this project wiki](https://github.com/ignaciolarranaga/contracts-example/wiki).
+You can find a complete end to end user story in [the project wiki](https://github.com/ignaciolarranaga/contracts-example/wiki).
 
 ## Getting Started
 
@@ -45,23 +45,25 @@ export AWS_DEFAULT_REGION=us-west-2
 
 3. If it is the first time you use AWS CDK you will need to [bootstrap it](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html#getting_started_bootstrap) (i.e. `cdk bootstrap aws://ACCOUNT-NUMBER/REGION`).
 
-4. Next we need to bootstrap the project (i.e. download the dependencies): `npm run bootstrap`
+4. Install the top project level dependencies: `npm install` (not needed if you are using Gitpod)
 
-5. Next build: `npm run build`
+5. Next we need to bootstrap the project (i.e. download the dependencies): `npm run bootstrap` (not needed if you are using Gitpod)
 
-6. Now you have to deploy the stack: `npm run deploy`
+6. Next build: `npm run build` (not needed if you are using Gitpod)
 
-7. Finally you can access your AppSync Console in order to exercise the API (e.g.: https://us-east-1.console.aws.amazon.com/appsync/home?region=us-east-1#/apis)
+7. Now you have to deploy the stack: `npm run deploy`
+
+8. Finally you can access your AppSync Console in order to exercise the API (e.g.: https://us-east-1.console.aws.amazon.com/appsync/home?region=us-east-1#/apis)
 
 Notes:
 * This project uses [Lerna](https://lerna.js.org/) for building the monorepo.
 * We do not rebuild the code on deploy to improve the performance of the development workflow, so remember to run `npm run build && npm run deploy`.
 * We are explicitly not using the workspaces because we need the graphql-resolver-libraries to be in the node_modules subfolder for packaging.
-* There are useful GraphQL queries on the project wiki.
+* There are useful GraphQL queries on [the project wiki](https://github.com/ignaciolarranaga/contracts-example/wiki).
 
 ## Testing
 
-This project uses both unit tests (*.spec.ts) and integration tests (*.test.ts).
+This project uses both unit tests (\*.spec.ts) and integration tests (\*.test.ts).
 * Use `npm test` to run the unit test all across the packages
 * Use `npm run it` to run the integration tests all across the packages (you need to execute `npm run deploy` first)
 
@@ -71,6 +73,9 @@ This project uses both unit tests (*.spec.ts) and integration tests (*.test.ts).
 * `npm run prettier` Check prettier issues on the different packages
 * `npm run regenerate-graphql-schema` Regenerates the GraphQL schema from the individual schema files
 * `npm run regenerate-graphql-schema-types` Regenerates the GraphQL schema types in [graphql-model](packages/graphql-model/)
+* `npm run build` Builds the codebase
+* `npm run deploy` Deploys the project to AWS cloud
+* `npm run destroy` Removes the project from the AWS cloud (i.e. rollbacks deploy)
 
 ## Technical Stack
 
@@ -84,13 +89,17 @@ This project mainly uses:
 * [ESLint](https://typescript-eslint.io/) for code validation
 * [Prettier](https://prettier.io/) for code formatting
 
-Some Q&A:
-* Q: Why we choose DynamoDB over for example a traditional relational database?
+## Questions and Answers
+* Q: **Why we choose DynamoDB over for example a traditional relational database?**
   * A: Because the queries that support the implementation will scale up-to levels that any relational database can reach
-* Q: Why we choose Lambda instead of a express-server?
+* Q: **Why DynamoDB?**
+  * A: Just for convenience (it can be built with the stack), I can do the same with MongoDB
+* Q: **Is it everything optimized then?**
+  * A: No, just some things are currently optimized (because of time constraints) but DynamoDB will allow that optimization.
+* Q: **Why we choose Lambda instead of a express-server?**
   * A: Because the implementation will self-scale rather than us having to setup and manage a cluster
-* Q: Why we choose GraphQL instead of REST?
-  * A: Because facilitates the implementation of the clients by leaving them to define how to use the API as well as the type system expressiveness value add
+* Q: **Why we choose GraphQL instead of REST?**
+  * A: Because facilitates the implementation of the clients by leaving them to define how to use the API as well as the type system expressiveness value added
 
 ## Entities
 
@@ -124,25 +133,14 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 3. Use `npm run bootstrap` to bootstrap the project (i.e. install all the dependencies)
 4. Use `npm run build` to build it
 
-### Execute Lambdas Locally
-To execute a lambda locally you can run: `sam local invoke LAMBDA_ID -e SAMPLE_EVENT -t stack.yml`.
-
-**IMPORTANT**:
-* If you make changes to the code you need to run `npm run build && npm run synth` first, example: `npm run build && npm run synth && sam local invoke GraphQLResolversCC7FA53B -e packages/graphql-resolvers/sample-events/getCompany.json -t stack.yml`
-
-References:
-* See (Run a Lambda function on local environment with AWS CDK and SAM)[https://cloudash.dev/blog/run-cdk-lambda-function-on-local-environment]
-* (sam local invoke)[https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-invoke.html] command.
-
 ### Regenerate the GraphQL Schema
 
-The schema is generated from different independent schema files split by type (i.e. user.graphql, location.graphql, etc.).
-To generate the combined schema file we use (graphql-schema-utilities)[https://github.com/awslabs/graphql-schema-utilities] and
+The schema is generated from different independent schema files split by type (i.e. Profile.graphql, Contract.graphql, etc.).
+To generate the combined schema file we use [graphql-schema-utilities](https://github.com/awslabs/graphql-schema-utilities) and
 specifically a script named regenerate-graphql-schema so execute `npm run regenerate-graphql-schema` in order to regenerate
-(schema.graphql)[src/app-sync/schema.graphql]
+[schema.graphql](src/app-sync/schema.graphql)
 
-Note: We do not do it automatically at the stack deploy in order to not slowdown every single deploy and/or to avoid un-intended
-changes to be produced automatically since the schema doesn't change so frequently.
+Note: We do not do it automatically at the stack deploy in order to not slowdown every single deploy and/or to avoid un-intended changes to be produced automatically since the schema doesn't change so frequently.
 
 ### Regenerate the GraphQL Schema Types
 
