@@ -23,6 +23,7 @@ This is an example around 3 main entities and some business rules.
 * **payJob(id: ID!)**: Pay for a job, a client can only pay if his balance >= the amount to pay. The amount should be moved from the client's balance to the contractor balance. See the integration tests at [payJob.test.ts](packages/graphql-resolvers/src/resolvers/payJob.test.ts).
 * **listJobs(filter: { paid: Boolean }, limit: Int, nextToken: String)**: Get all paid/unpaid jobs for a user.
 * **listContracts(filter: { unterminated: Boolean }, limit: Int, nextToken: String)**: Get all or terminated/unterminated contracts for a user.
+* **bestProfession(filter: { start: Date, end: Date })**: Returns the profession that earned the most money (sum of jobs paid) for any contactor that worked in the query time range.
 
 You can find sample GraphQL operations around this model in [GRAPHQL-QUERIES.md](GRAPHQL-QUERIES.md).
 
