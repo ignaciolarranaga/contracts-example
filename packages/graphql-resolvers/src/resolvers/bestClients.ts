@@ -22,25 +22,7 @@ export default async function bestClients(
   );
 
   // TODO: This can be optimized for example with bucketing
-  const paidJobs = (
-    await documentClient
-      .query({
-        TableName: process.env.TABLE_NAME!,
-        IndexName: 'GSI3',
-        KeyConditionExpression: 'PK3 = :pk3 AND SK3 BETWEEN :start AND :end',
-        ExpressionAttributeValues: {
-          ':pk3': 'Payment',
-          ':start': event.arguments.filter?.start
-            ? event.arguments.filter.start
-            : '0000-01-01T00:00:00.000Z',
-          ':end': event.arguments.filter?.end
-            ? event.arguments.filter.end
-            : '9999-12-31T23:59:59.999Z',
-        },
-      })
-      .promise()
-  ).Items as (Job & JobDynamoDBItem)[];
-
+  const paidJobs = await calculatePaidJobs(event);
   const clientNames: { [id: string]: string } = {};
   const clientTotals: { [id: string]: number } = {};
   for (const job of paidJobs) {
@@ -65,4 +47,27 @@ export default async function bestClients(
   return {
     items,
   };
+}
+
+async function calculatePaidJobs(
+  event: AppSyncResolverEvent<QueryBestClientsArgs>
+) {
+  return (
+    await documentClient
+      .query({
+        TableName: process.env.TABLE_NAME!,
+        IndexName: 'GSI3',
+        KeyConditionExpression: 'PK3 = :pk3 AND SK3 BETWEEN :start AND :end',
+        ExpressionAttributeValues: {
+          ':pk3': 'Payment',
+          ':start': event.arguments.filter?.start
+            ? event.arguments.filter.start
+            : '0000-01-01T00:00:00.000Z',
+          ':end': event.arguments.filter?.end
+            ? event.arguments.filter.end
+            : '9999-12-31T23:59:59.999Z',
+        },
+      })
+      .promise()
+  ).Items as (Job & JobDynamoDBItem)[];
 }
