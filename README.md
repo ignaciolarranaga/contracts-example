@@ -128,7 +128,7 @@ This project uses [DynamoDB](https://aws.amazon.com/es/dynamodb/) for persistenc
 
 ### How-to manual configure my environment
 
-1. Install the software dependencies as detailed in [.gitpodDockerfile](.gitpodDockerfile) (e.g. aws-cdk, aws-sam-cli, etc.)
+1. Install the software dependencies as detailed in [.gitpodDockerfile](.gitpod.Dockerfile) (e.g. aws-cdk, aws-sam-cli, etc.)
 2. Use `npm install` to download the lerna dependencies used in the following steps
 3. Use `npm run bootstrap` to bootstrap the project (i.e. install all the dependencies)
 4. Use `npm run build` to build it
