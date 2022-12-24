@@ -26,7 +26,7 @@ This is an example around 3 main entities and some business rules.
 * **bestProfession(filter: { start: Date, end: Date })**: Returns the profession that earned the most money (sum of jobs paid) for any contactor that worked in the query time range.
 * **bestClients(filter: { start: Date, end: Date }, limit: Int)**: Returns the clients the paid the most for jobs in the query time period. Limit query parameter should be applied, default limit is 2
 
-You can find a complete end to end user story in (this project wiki)[https://github.com/ignaciolarranaga/contracts-example/wiki].
+You can find a complete end to end user story in [this project wiki](/wiki).
 
 ## Getting Started
 
